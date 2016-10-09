@@ -1,0 +1,40 @@
+/*
+ * user guide available at https://docs.gradle.org/2.6/userguide/tutorial_java_projects.html
+ * tutorial at https://spring.io/guides/gs/gradle/
+ */
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'application'
+
+mainClassName = 'geoptimize.Program'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+jar {
+
+	//create a fat jar file (include all dependencies within the jar)
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	
+	//must include jar entry point to be runnable
+    manifest {
+        attributes 'Main-Class': 'geoptimize.Program'
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.12'
+	compile 'com.nativelibs4java:javacl:1.0.0-RC3'
+	compile 'com.twelvemonkeys.imageio:imageio-tiff:3.2.1'
+	
+    testCompile 'org.testng:testng:6.8.1'
+    testCompile 'junit:junit:4.12'
+}
