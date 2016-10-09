@@ -7,23 +7,9 @@ apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'application'
 
-mainClassName = 'geoptimize.Program'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-jar {
-
-	//create a fat jar file (include all dependencies within the jar)
-	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-	}
-	
-	//must include jar entry point to be runnable
-    manifest {
-        attributes 'Main-Class': 'geoptimize.Program'
-    }
-}
+mainClassName = 'geoptimize.Program'
 
 repositories {
     jcenter()
@@ -34,10 +20,21 @@ repositories {
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.12'
 	compile 'com.nativelibs4java:javacl:1.0.0-RC3'
-	compile 'com.twelvemonkeys.imageio:imageio-tiff:3.2.1'
-	compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
-	compile 'net.imagej:ij:1.51g'
+	
+	//None of these solved the GeoTIFF problem, can remove from future commits
+	//compile 'com.twelvemonkeys.imageio:imageio-tiff:3.2.1'
+	//compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
+	//compile 'net.imagej:ij:1.51g'
 	
     testCompile 'org.testng:testng:6.8.1'
     testCompile 'junit:junit:4.12'
+}
+
+jar {
+	from { //create a fat jar file (include all dependencies within the jar)
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+    manifest { //must include jar entry point to be runnable
+        attributes 'Main-Class': 'geoptimize.Program'
+    }
 }

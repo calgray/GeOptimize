@@ -13,23 +13,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-import com.sun.media.imageioimpl.plugins.tiff.TIFFImageReaderSpi;
-
-//import com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReaderSpi;
-//import com.twelvemonkeys.imageio.plugins.tiff.TIFFImageReader;
 
 import javax.swing.*;
 
-
 import geoptimize.MapFilter;
 import geoptimize.ServiceNode;
-import ij.ImagePlus;
-
-import sun.awt.image.ImageDecoder;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -43,7 +31,7 @@ public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -2244890355971879323L;
 
 	//Business Objects
-	private static final TIFFImageReaderSpi SPI = new TIFFImageReaderSpi();
+	//private static final TIFFImageReaderSpi SPI = new TIFFImageReaderSpi();
 	
 	protected BufferedImage backgroundImage;
 	protected BufferedImage heatmap;
@@ -241,12 +229,12 @@ public class MainWindow extends JFrame {
 			if(result == JFileChooser.APPROVE_OPTION) {
 				File f = fc.getSelectedFile();
 				try {
-					//PNG JPEG WAY
-					//BufferedImage img = ImageIO.read(f);
-					//MainWindow.this.setImage(img);
+					//PNG/BMP WAY
+					BufferedImage img = ImageIO.read(f);
+					MainWindow.this.setImage(img);
 					
 					//TIFF
-					
+					/*
 					ImageInputStream stream = new FileImageInputStream(f);
 					ImageReader reader = SPI.createReaderInstance(null);
 					reader.setInput(stream);
@@ -277,16 +265,16 @@ public class MainWindow extends JFrame {
 					//TIFFImageReader reader = new TIFFImageReader(null);
 					
 					MainWindow.this.setImage(img);
-					
+					*/
 					
 					//ImageJ
 					//ImagePlus img = new ImagePlus(f.getAbsolutePath());
 					//System.out.println("Dimension : " + img.getDimensions().toString());
 					
 					
-				} catch(Exception e1) {}// catch (IOException e1) {
-				//	e1.printStackTrace();
-				//}
+				}  catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}

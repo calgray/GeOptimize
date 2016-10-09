@@ -18,14 +18,14 @@ public class SimulationCanvas extends JComponent {
 	private LinkedList<ServiceNode> nodes;
 	
 	private Image image;
-	private int magnification = 1;
+	private float magnification = 1;
 	
-	public void setMagnification(int mag) {
+	public void setMagnification(float mag) {
 		if(magnification != mag && image != null) {
 			magnification = mag;
 			Dimension d = this.getSize();
-			d.width = image.getWidth(null) * magnification;
-			d.height = image.getHeight(null) * magnification;
+			d.width = (int)(image.getWidth(null) * magnification);
+			d.height = (int)(image.getHeight(null) * magnification);
 			this.setPreferredSize(d);
 			this.revalidate();
 			this.repaint();
@@ -37,16 +37,16 @@ public class SimulationCanvas extends JComponent {
 	}
 	
 	public void zoomIn() { 
-		setMagnification((magnification < 10) ? magnification+1 : magnification);
+		setMagnification((magnification < 10) ? magnification*2.0f : magnification);
 	} 
 	
 	public void zoomOut() { 
-		setMagnification((magnification > 1) ? magnification-1 : magnification);
+		setMagnification((magnification > 0.01) ? magnification/2.0f : magnification);
 	}
 	
 	public void setImage(Image image) {
 		this.image = image;
-		setMagnification(2);
+		setMagnification(1);
 	}
 	
 	public SimulationCanvas() {
@@ -78,18 +78,18 @@ public class SimulationCanvas extends JComponent {
 			Point p = node.getPosition();
 			float r = node.getRange();
 			graphics.drawOval(
-					p.x * magnification,
-					p.y * magnification,
-					(int)r * magnification,
-					(int)r * magnification);
+					(int)(p.x * magnification),
+					(int)(p.y * magnification),
+					(int)(r * magnification),
+					(int)(r * magnification));
 		}
 	}
 	
 	private void drawBackground(Graphics graphics) {
 		if (image != null) {
 			Dimension size = this.getSize();
-			int width = image.getWidth(null) * magnification;
-			int height = image.getHeight(null) * magnification;
+			int width = (int)(image.getWidth(null) * magnification);
+			int height = (int)(image.getHeight(null) * magnification);
 			
 			graphics.drawImage(image, 0, 0, width, height, null);
 		}
