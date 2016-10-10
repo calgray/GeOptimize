@@ -26,8 +26,22 @@ dependencies {
 	//compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
 	//compile 'net.imagej:ij:1.51g'
 	
-    testCompile 'org.testng:testng:6.8.1'
     testCompile 'junit:junit:4.12'
+	// testCompile 'org.testng:testng:6.8.1'
+}
+
+test {
+	
+	//testLogging.showStandardStreams = true
+
+	//afterTest { desc, result ->
+	//	println "Executing test ${desc.name} [${desc.className}] with result: ${result.resultType}"
+	//}
+	
+	testLogging { 
+		events "passed", "skipped", "failed"
+		exceptionFormat "full"
+	}
 }
 
 jar {

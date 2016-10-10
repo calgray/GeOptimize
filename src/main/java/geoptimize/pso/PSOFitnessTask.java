@@ -1,4 +1,4 @@
-package geoptimize;
+package geoptimize.pso;
 
 import com.nativelibs4java.opencl.*;
 

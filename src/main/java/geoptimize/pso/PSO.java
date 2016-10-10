@@ -1,4 +1,4 @@
-package geoptimize;
+package geoptimize.pso;
 
 /**
  * Main PSO code
@@ -7,7 +7,6 @@ package geoptimize;
  *
  */
 public class PSO {
-	
 	
 	
 }

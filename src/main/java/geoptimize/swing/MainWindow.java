@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import geoptimize.MapFilter;
+import geoptimize.SimulationManager;
 import geoptimize.ServiceNode;
 
 import java.awt.event.KeyEvent;
@@ -27,15 +28,24 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.ActionEvent;
 
+/**
+ * TODO: move toolbox content to SimulationToolbox.
+ * 
+ * @author Callan
+ *
+ */
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -2244890355971879323L;
 
 	//Business Objects
 	//private static final TIFFImageReaderSpi SPI = new TIFFImageReaderSpi();
 	
+	protected SimulationManager context;
+	
+	protected LinkedList<ServiceNode> nodes;
 	protected BufferedImage backgroundImage;
 	protected BufferedImage heatmap;
-	protected LinkedList<ServiceNode> nodes;
+	
 	
 	//Panes
 	private JSplitPane splitPane;
@@ -64,16 +74,8 @@ public class MainWindow extends JFrame {
 	private JLabel lblCount;
 	private JLabel lblRadius;
 	
-	public void setImage(BufferedImage img) {
-		backgroundImage = img;
-		simulationCanvas.setImage(backgroundImage);
-		
-		//heatmap = MapFilter.heatmapFilter(img);
-		//heatmapCanvas.setImage(heatmap);
-	}
-	
-	public MainWindow() {
-		
+	public MainWindow(SimulationManager context) {
+		this.context = context;
 		this.setMinimumSize(new Dimension(600, 400));
 		initUI();
 	}
@@ -213,6 +215,18 @@ public class MainWindow extends JFrame {
 
 	}
 	
+	
+	public void setImage(BufferedImage img) {
+		backgroundImage = img;
+		simulationCanvas.setImage(backgroundImage);
+		
+		MainWindow.this.invalidate();
+		
+		//heatmap = MapFilter.heatmapFilter(img);
+		//heatmapCanvas.setImage(heatmap);
+	}
+	
+	
 	@SuppressWarnings("serial")
 	private class OpenAction extends AbstractAction {
 		public OpenAction() {
@@ -223,55 +237,11 @@ public class MainWindow extends JFrame {
 			
 			JFileChooser fc = new JFileChooser();
 			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-			
 			int result = fc.showOpenDialog(MainWindow.this);
-			
 			if(result == JFileChooser.APPROVE_OPTION) {
 				File f = fc.getSelectedFile();
 				try {
-					//PNG/BMP WAY
-					BufferedImage img = ImageIO.read(f);
-					MainWindow.this.setImage(img);
-					
-					//TIFF
-					/*
-					ImageInputStream stream = new FileImageInputStream(f);
-					ImageReader reader = SPI.createReaderInstance(null);
-					reader.setInput(stream);
-					
-					
-					//ImageReadParam param = reader.getDefaultReadParam();//this won't work
-					ImageReadParam param = new ImageReadParam();
-					
-					param.setSourceRegion(new Rectangle(1000, 1000));
-					
-					BufferedImage img = reader.read(0);
-					
-					//image now in float32 format
-					System.out.println("width : " + img.getWidth());
-					System.out.println("colormodel: " + img.getColorModel());
-					System.out.println("pixel : " + (float)(img.getRGB(0, 0)));
-					
-					ColorSpace colorspace = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-					ColorModel colorModel = new ComponentColorModel(colorspace, false, false, Transparency.OPAQUE, DataBuffer.TYPE_INT);
-					BufferedImageOp converter = new ColorConvertOp(colorspace, null);
-					BufferedImage newimg = converter.createCompatibleDestImage(img, colorModel);
-					converter.filter(img, newimg);
-					
-					System.out.println("pixel : " + (newimg.getRGB(0, 0)));
-					
-					
-					//ImageReaderSpi reader = new ImageReaderSpi();
-					//TIFFImageReader reader = new TIFFImageReader(null);
-					
-					MainWindow.this.setImage(img);
-					*/
-					
-					//ImageJ
-					//ImagePlus img = new ImagePlus(f.getAbsolutePath());
-					//System.out.println("Dimension : " + img.getDimensions().toString());
-					
-					
+					context.loadPopulationGrid(f);
 				}  catch (IOException e1) {
 					e1.printStackTrace();
 				}

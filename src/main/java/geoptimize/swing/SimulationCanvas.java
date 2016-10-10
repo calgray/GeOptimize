@@ -19,6 +19,9 @@ public class SimulationCanvas extends JComponent {
 	
 	private Image image;
 	private float magnification = 1;
+	private float minMagnification = 0.01f;
+	private float maxMagnification = 10f;
+	private float magnificationSensitivity = 1.2f;
 	
 	public void setMagnification(float mag) {
 		if(magnification != mag && image != null) {
@@ -33,15 +36,16 @@ public class SimulationCanvas extends JComponent {
 	}
 	
 	public void zoom(int zoom) {
-		setMagnification(Math.max(1, Math.min(10, magnification+zoom)));
+		float mag = geoptimize.helper.Math.clamp(minMagnification, maxMagnification, (float)(magnification*Math.pow(magnificationSensitivity, zoom)));
+		setMagnification(mag);
 	}
 	
 	public void zoomIn() { 
-		setMagnification((magnification < 10) ? magnification*2.0f : magnification);
+		setMagnification((magnification < maxMagnification) ? magnification*magnificationSensitivity : magnification);
 	} 
 	
 	public void zoomOut() { 
-		setMagnification((magnification > 0.01) ? magnification/2.0f : magnification);
+		setMagnification((magnification > minMagnification) ? magnification/magnificationSensitivity : magnification);
 	}
 	
 	public void setImage(Image image) {
@@ -51,6 +55,7 @@ public class SimulationCanvas extends JComponent {
 	
 	public SimulationCanvas() {
 		
+		//TODO: load nodes from the running simulation
 		nodes = new LinkedList<ServiceNode>();
 		nodes.add(new ServiceNode(140, 160, 40));
 		nodes.add(new ServiceNode(160, 180, 40));
