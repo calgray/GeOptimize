@@ -10,6 +10,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import geoptimize.ServiceNode;
@@ -23,10 +24,6 @@ import geoptimize.ServiceNode;
  */
 public class SimulationCanvas extends JComponent {
 	private static final long serialVersionUID = -2480881754680088455L;
-
-	//TODO: could try and use the scroll pane
-	// but causes flashing.
-	//private JScrollPane scrollpane;
 	
 	//TODO: will want to load this list from the current PSOSimulation's gbest
 	private LinkedList<ServiceNode> nodes;
@@ -65,6 +62,10 @@ public class SimulationCanvas extends JComponent {
 	public void setImage(Image image) {
 		this.image = image;
 		setMagnification(1);
+		
+		//for some reason this isn't triggering a repaint
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public SimulationCanvas() {
@@ -92,11 +93,15 @@ public class SimulationCanvas extends JComponent {
 	}
 	
 	private void drawNodes(Graphics graphics) {
-		graphics.setColor(Color.red);
+		
+		Color fillColor = new Color(0f, 1f, 0.5f, 0.6f);
+		
+		graphics.setColor(fillColor);
 		for(ServiceNode node : nodes) {
 			Point p = node.getPosition();
 			float r = node.getRange();
-			graphics.drawOval(
+			
+			graphics.fillOval(
 					(int)(p.x * magnification),
 					(int)(p.y * magnification),
 					(int)(r * magnification),

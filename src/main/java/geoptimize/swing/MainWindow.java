@@ -1,32 +1,13 @@
 package geoptimize.swing;
 
 import java.awt.*;
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorConvertOp;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
-
-import javax.imageio.ImageIO;
-
 import javax.swing.*;
 
-import geoptimize.MapFilter;
 import geoptimize.SimulationManager;
 import geoptimize.ServiceNode;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.ActionEvent;
 
 /**
  * TODO: move toolbox content to SimulationToolbox.
@@ -48,31 +29,27 @@ public class MainWindow extends JFrame {
 	
 	
 	//Panes
-	private JSplitPane splitPane;
-	private JTabbedPane tabbedPane;
-	private SimulationCanvas simulationCanvas;
-	private ImageCanvas heatmapCanvas;
+	protected JSplitPane splitPane;
+	protected JTabbedPane tabbedPane;
+	protected JScrollPane simulationScrollPane;
+	protected SimulationCanvas simulationCanvas;
+	protected JScrollPane heatmapScrollPane;
+	protected ImageCanvas heatmapCanvas;
 	
 	//Menu
-	private JMenuBar menuBar;
-	private JMenu mnFile, mnView, mnSettings, mnHelp;
-	private JMenuItem mntmOpen;
-	private JSeparator separator;
-	private JMenuItem mntmExit;
-	private JMenuItem mntmZoomIn;
-	private JMenuItem mntmZoomOut;
-	private final Action actionZoomIn = new ZoomInAction();
-	private final Action actionZoomOut = new ZoomOutAction();
+	protected MainMenuBar menuBar;
 
 	//Toolbox
-	private JPanel panel;
-	private JButton btnStart;
-	private JLabel lblPsoSettings;
-	private JLabel lblNodeSettings;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JLabel lblCount;
-	private JLabel lblRadius;
+	protected JPanel panel;
+	protected JButton btnStart;
+	protected JLabel lblPsoSettings;
+	protected JLabel lblNodeSettings;
+	protected JTextField textField;
+	protected JTextField textField_1;
+	protected JLabel lblCount;
+	protected JLabel lblRadius;
+
+	
 	
 	public MainWindow(SimulationManager context) {
 		this.context = context;
@@ -83,23 +60,23 @@ public class MainWindow extends JFrame {
 	private void initUI() {
 		setTitle("GeOptimize");
 		
-		initMenubar();
+		menuBar = new MainMenuBar(this);
+		setJMenuBar(menuBar);
 		
 		splitPane = new JSplitPane();
 		splitPane.setContinuousLayout(true);
 		this.setContentPane(splitPane);
 		
-		//scrollPane = new ScrollPane();
-		//this.setContentPane(scrollPane);
-		
 		tabbedPane = new JTabbedPane();
 		splitPane.setRightComponent(tabbedPane);
 		
 		simulationCanvas = new SimulationCanvas();
-		tabbedPane.addTab("Simulation", simulationCanvas);
+		simulationScrollPane = new JScrollPane(simulationCanvas);
+		tabbedPane.addTab("Simulation", simulationScrollPane);
 
 		heatmapCanvas = new ImageCanvas();
-		tabbedPane.addTab("HeatMap", heatmapCanvas);
+		heatmapScrollPane = new JScrollPane(heatmapCanvas);
+		tabbedPane.addTab("HeatMap", heatmapScrollPane);
 		
 		initToolbox();
 
@@ -109,41 +86,7 @@ public class MainWindow extends JFrame {
 		revalidate();
 	}
 	
-	private void initMenubar() {
-		menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		mnFile = new JMenu("File");
-		menuBar.add(mnFile);
-		
-		mntmOpen = new JMenuItem("Open");
-		mntmOpen.setAction(new OpenAction());
-		mnFile.add(mntmOpen);
-		
-		separator = new JSeparator();
-		mnFile.add(separator);
-		
-		mntmExit = new JMenuItem("Exit");
-		mnFile.add(mntmExit);
-		
-		mnView = new JMenu("View");
-		menuBar.add(mnView);
-		
-		mntmZoomIn = new JMenuItem();
-		mntmZoomIn.setAction(actionZoomIn);
-		mnView.add(mntmZoomIn);
-		
-		mntmZoomOut = new JMenuItem();
-		mntmZoomOut.setAction(actionZoomOut);
-		mnView.add(mntmZoomOut);
-		
-		mnSettings = new JMenu("Settings");
-		menuBar.add(mnSettings);
-		
-		mnHelp = new JMenu("Help");
-		menuBar.add(mnHelp);
-	}
-	
+	//TODO: move this
 	private void initToolbox() {
 		panel = new JPanel();
 		splitPane.setLeftComponent(panel);
@@ -220,56 +163,12 @@ public class MainWindow extends JFrame {
 		backgroundImage = img;
 		simulationCanvas.setImage(backgroundImage);
 		
-		MainWindow.this.invalidate();
-		
-		//heatmap = MapFilter.heatmapFilter(img);
-		//heatmapCanvas.setImage(heatmap);
+		simulationCanvas.revalidate();
+		simulationScrollPane.revalidate();
+		MainWindow.this.revalidate();
 	}
 	
 	
-	@SuppressWarnings("serial")
-	private class OpenAction extends AbstractAction {
-		public OpenAction() {
-			putValue(NAME, "Open");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			
-			JFileChooser fc = new JFileChooser();
-			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-			int result = fc.showOpenDialog(MainWindow.this);
-			if(result == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				try {
-					context.loadPopulationGrid(f);
-				}  catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class ZoomInAction extends AbstractAction {
-		public ZoomInAction() {
-			putValue(NAME, "Zoom In");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			simulationCanvas.zoomIn();
-			MainWindow.this.invalidate();
-		}
-	}
-	
-	@SuppressWarnings("serial")
-	private class ZoomOutAction extends AbstractAction {
-		public ZoomOutAction() {
-			putValue(NAME, "Zoom Out");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			simulationCanvas.zoomOut();
-			MainWindow.this.invalidate();
-		}
-	}
+
+
 }
