@@ -10,11 +10,25 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+
 import geoptimize.ServiceNode;
 
+/***
+ * Canvas Frame that draws the image member variable.
+ * Also draws a list of nodes to show the current gbest.
+ * 
+ * @author Callan
+ *
+ */
 public class SimulationCanvas extends JComponent {
 	private static final long serialVersionUID = -2480881754680088455L;
 
+	//TODO: could try and use the scroll pane
+	// but causes flashing.
+	//private JScrollPane scrollpane;
+	
+	//TODO: will want to load this list from the current PSOSimulation's gbest
 	private LinkedList<ServiceNode> nodes;
 	
 	private Image image;
@@ -57,9 +71,9 @@ public class SimulationCanvas extends JComponent {
 		
 		//TODO: load nodes from the running simulation
 		nodes = new LinkedList<ServiceNode>();
-		nodes.add(new ServiceNode(140, 160, 40));
-		nodes.add(new ServiceNode(160, 180, 40));
-		nodes.add(new ServiceNode(160, 200, 40));
+		nodes.add(new ServiceNode(2200, 2400, 80));
+		nodes.add(new ServiceNode(2400, 2600, 80));
+		nodes.add(new ServiceNode(2400, 2800, 80));
 		
 		this.addMouseWheelListener(new MouseWheelListener() {
 			@Override
