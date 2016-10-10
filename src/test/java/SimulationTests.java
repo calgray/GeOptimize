@@ -10,7 +10,7 @@ public class SimulationTests {
 	@Test
 	public void testLoadingPopulationGrid() {
 		SimulationManager m = new SimulationManager();
-		File f = new File("./images/exportdata-255-bw.png");
+		File f = new File("./images/populationgrid-binary.png");
 		try {
 			m.loadPopulationGrid(f);
 		} catch(IOException e) {
