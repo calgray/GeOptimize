@@ -10,8 +10,12 @@ package geoptimize.pso;
  */
 public class PSOFitnessTaskRadiusSum implements PSOFitnessTask {
 
-	public PSOFitnessTaskRadiusSum() {
-		
+	protected PSOPopulationGrid grid;
+	protected PSOParticle particle;
+	
+	public PSOFitnessTaskRadiusSum(PSOPopulationGrid grid, PSOParticle particle) {
+		this.grid = grid;
+		this.particle = particle;
 	}
 	
 	@Override

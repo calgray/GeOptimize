@@ -20,11 +20,8 @@ repositories {
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.12'
 	compile 'com.nativelibs4java:javacl:1.0.0-RC3'
-	
-	//None of these solved the GeoTIFF problem, can remove from future commits
-	//compile 'com.twelvemonkeys.imageio:imageio-tiff:3.2.1'
-	//compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
-	//compile 'net.imagej:ij:1.51g'
+	//Need this for ImageIO to read GeoTIF
+	compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
 	
     testCompile 'junit:junit:4.12'
 	// testCompile 'org.testng:testng:6.8.1'
