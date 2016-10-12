@@ -27,6 +27,7 @@ public class SimulationManager {
 	protected BufferedImage backgroundImage;
 	
 	protected PSOSimulation simulation;
+	
 
 	public BufferedImage getPopulationGrid() { return populationGrid; }
 	
@@ -34,26 +35,33 @@ public class SimulationManager {
 		simulation = new PSOSimulation();
 	}
 	
-	public void createWindow() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	/***
+	 * Creates and binds a new window to this manager.
+	 * Use this this method to ensure both the window and
+	 * manager objects have reference to each other.
+	 * @return
+	 */
+	public MainWindow createWindow() {
 		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				mainWindow = new MainWindow(SimulationManager.this);
-				mainWindow.setVisible(true);
-			}});
+		mainWindow = new MainWindow(this);
+		return mainWindow;
 	}
 	
 	public void loadPopulationGrid(File f) throws IOException {
 		BufferedImage pg = ImageIO.read(f);
 		populationGrid = pg;
+	}
+	
+	public void loadBackground(File f) throws IOException {
+		BufferedImage pg = ImageIO.read(f);
+		if(pg.getSampleModel().getDataType() == 4) {
+			throw new IOException("Image raster format must be integer type");
+		}
+		backgroundImage = pg;
 		if(mainWindow != null) {
 			mainWindow.setImage(pg);
 		}
+		mainWindow.revalidate();
 	}
 	
 	public void startSimulation() {

@@ -36,8 +36,10 @@ public class MainMenuBar extends JMenuBar {
 		mnFile = new JMenu("File");
 		this.add(mnFile);
 		
+		//TODO: might want to clarify what this does,
+		//or maybe behave as a sort of project loading.
 		mntmOpen = new JMenuItem("Open");
-		mntmOpen.setAction(new OpenAction(parent));
+		mntmOpen.setAction(parent.openBackgroundAction);
 		mnFile.add(mntmOpen);
 		
 		separator = new JSeparator();
@@ -62,33 +64,6 @@ public class MainMenuBar extends JMenuBar {
 		
 		mnHelp = new JMenu("Help");
 		this.add(mnHelp);
-	}
-	
-	@SuppressWarnings("serial")
-	private class OpenAction extends AbstractAction {
-		MainWindow window;
-		
-		public OpenAction(MainWindow window) {
-			this.window = window;
-			putValue(NAME, "Open");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			
-			JFileChooser fc = new JFileChooser();
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fc.setFileFilter(new FileNameExtensionFilter("Image Formats (*.png, *.tif, *.bmp)","png","tif","bmp"));
-			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-			int result = fc.showOpenDialog(window);
-			if(result == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				try {
-					window.context.loadPopulationGrid(f);
-				}  catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			}
-		}
 	}
 	
 	@SuppressWarnings("serial")

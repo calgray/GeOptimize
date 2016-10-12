@@ -15,6 +15,18 @@ public class Program {
 	
 	public static void main(String[] args) {
 		SimulationManager manager = new SimulationManager();
-		manager.createWindow();
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				MainWindow window = manager.createWindow();
+				window.setVisible(true);
+			}
+		});
 	}
 }

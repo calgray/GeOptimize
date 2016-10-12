@@ -21,9 +21,10 @@ public class ImageCanvas extends JComponent {
 			Dimension d = this.getSize();
 			d.width = image.getWidth(null) * magnification;
 			d.height = image.getHeight(null) * magnification;
-			this.setPreferredSize(d);
-			this.revalidate();
-			this.repaint();
+			
+			setPreferredSize(d);
+			revalidate();
+			repaint();
 		}
 	}
 	
