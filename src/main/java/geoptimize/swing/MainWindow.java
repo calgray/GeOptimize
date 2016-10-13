@@ -3,6 +3,8 @@ package geoptimize.swing;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -11,6 +13,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import geoptimize.SimulationManager;
 import geoptimize.ServiceNode;
+import geoptimize.SimulationController;
 
 
 /**
@@ -24,12 +27,13 @@ public class MainWindow extends JFrame {
 
 	//Business Objects
 	protected SimulationManager context;
+	protected SimulationController controller;
 	
 	//TODO: these might need to move to context
 	protected boolean showSwarm;
 	protected boolean showGBest;
 	protected LinkedList<ServiceNode> nodes;
-	protected BufferedImage backgroundImage;
+	//protected BufferedImage backgroundImage;
 	protected BufferedImage heatmap;
 	
 	//Controllers
@@ -39,12 +43,17 @@ public class MainWindow extends JFrame {
 	//Views
 	protected MainMenuBar menuBar;
 	protected SimulationToolbox toolbox;
+	
 	protected JSplitPane splitPane;
 	protected JTabbedPane tabbedPane;
 	protected JScrollPane simulationScrollPane;
 	protected SimulationCanvas simulationCanvas;
 	protected JScrollPane heatmapScrollPane;
 	protected ImageCanvas heatmapCanvas;
+	private JPanel mainPanel;
+	protected JPanel statusBar;
+	private JLabel lblCursor;
+	protected JLabel lblCursorcoords;
 	
 	public MainWindow(SimulationManager context) {
 		this.context = context;
@@ -53,6 +62,7 @@ public class MainWindow extends JFrame {
 		openPopulationAction = new OpenPopulationAction(this);
 		openBackgroundAction = new OpenBackgroundAction(this);
 		
+		context.addPropertyChangeListener(new MainWindowPCL(this));
 		
 		this.setMinimumSize(new Dimension(600, 400));
 		initUI();
@@ -62,22 +72,51 @@ public class MainWindow extends JFrame {
 		setTitle("GeOptimize");
 		
 		menuBar = new MainMenuBar(this);
-		setJMenuBar(menuBar);
+		this.setJMenuBar(menuBar);
+		
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BorderLayout(0, 0));
+		this.setContentPane(mainPanel);
 		
 		splitPane = new JSplitPane();
 		splitPane.setContinuousLayout(true);
-		this.setContentPane(splitPane);
+		mainPanel.add(splitPane);
 		
 		tabbedPane = new JTabbedPane();
 		splitPane.setRightComponent(tabbedPane);
 		
-		simulationCanvas = new SimulationCanvas();
+		simulationCanvas = new SimulationCanvas(this);
 		simulationScrollPane = new JScrollPane(simulationCanvas);
 		tabbedPane.addTab("Simulation", simulationScrollPane);
 
 		heatmapCanvas = new ImageCanvas();
 		heatmapScrollPane = new JScrollPane(heatmapCanvas);
 		tabbedPane.addTab("HeatMap", heatmapScrollPane);
+		
+		statusBar = new JPanel();
+		mainPanel.add(statusBar, BorderLayout.SOUTH);
+		GridBagLayout gbl_statusBar = new GridBagLayout();
+		gbl_statusBar.columnWidths = new int[]{0, 0, 0};
+		gbl_statusBar.rowHeights = new int[]{14};
+		gbl_statusBar.columnWeights = new double[]{0.0, 0.0, 1.0};
+		gbl_statusBar.rowWeights = new double[]{0.0};
+		statusBar.setLayout(gbl_statusBar);
+		
+		lblCursor = new JLabel("Cursor : ");
+		GridBagConstraints gbc_lblCursor = new GridBagConstraints();
+		gbc_lblCursor.insets = new Insets(0, 5, 0, 5);
+		gbc_lblCursor.fill = GridBagConstraints.VERTICAL;
+		gbc_lblCursor.gridx = 0;
+		gbc_lblCursor.gridy = 0;
+		statusBar.add(lblCursor, gbc_lblCursor);
+		
+		lblCursorcoords = new JLabel("");
+		GridBagConstraints gbc_lblCursorcoords = new GridBagConstraints();
+		gbc_lblCursorcoords.insets = new Insets(0, 5, 0, 5);
+		gbc_lblCursorcoords.gridx = 1;
+		gbc_lblCursorcoords.gridy = 0;
+		statusBar.add(lblCursorcoords, gbc_lblCursorcoords);
+		
 		
 		toolbox = new SimulationToolbox(this);
 		splitPane.setLeftComponent(toolbox);
@@ -88,86 +127,46 @@ public class MainWindow extends JFrame {
 		repaint();
 	}
 	
-	//TODO: triggered by the toolbox
-	public void setShowSwarm(boolean show) {
-		System.out.println("Show Swarm : " + show);
-	}
-	
-	public void setShowGBest(boolean show) {
-		System.out.println("Show GBest : " + show);
-		
-	}
-	
-	public void setImage(BufferedImage img) {
-		backgroundImage = img;
-		simulationCanvas.setImage(backgroundImage);
-		
-		simulationCanvas.revalidate();
-		simulationScrollPane.revalidate();
-		simulationScrollPane.repaint();
-		
-		MainWindow.this.revalidate();
-	}
-	
-	
-	@SuppressWarnings("serial")
-	private class OpenPopulationAction extends AbstractAction {
-		MainWindow window;
-		
-		public OpenPopulationAction(MainWindow window) {
+	//This handles events triggered by the model
+	private class MainWindowPCL implements PropertyChangeListener {
+		protected MainWindow window;
+		public MainWindowPCL(MainWindow window) {
 			this.window = window;
-			putValue(NAME, "Open");
-			putValue(SHORT_DESCRIPTION, "Some short description");
 		}
-		public void actionPerformed(ActionEvent e) {
+		@Override
+		public void propertyChange(PropertyChangeEvent evt) {
+			String propertyName = evt.getPropertyName();
 			
-			JFileChooser fc = new JFileChooser();
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fc.setFileFilter(new FileNameExtensionFilter("Image Formats (*.png, *.tif, *.bmp)","png","tif","bmp"));
-			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-			int result = fc.showOpenDialog(window);
-			if(result == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				window.toolbox.txtPopulation.setText(f.getPath());
-				
-				try {
-					window.context.loadPopulationGrid(f);
-					window.toolbox.txtPopulation.setText(f.getPath());
-				}  catch (IOException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Failed to load population grid\n" + e.toString());
+			switch(propertyName) {
+				case "populationGridFile": {
+					File f = (File)evt.getNewValue();
+					window.toolbox.txtPopulation.setText(f.getAbsolutePath());
+					break;
 				}
+				case "backgroundImageFile": {
+					File f = (File)evt.getNewValue();
+					window.toolbox.txtPopulation.setText(f.getAbsolutePath());
+					break;
+				}
+				case "backgroundImage": {
+					BufferedImage img = (BufferedImage)evt.getNewValue();
+					window.simulationCanvas.setBackgroundImage(img);
+					break;
+				}
+				case "simulationRegion": {
+					Rectangle rgn = (Rectangle)evt.getNewValue();
+					window.toolbox.spnRegionX.setValue(rgn.x);
+					window.toolbox.spnRegionY.setValue(rgn.y);
+					window.toolbox.spnRegionW.setValue(rgn.width);
+					window.toolbox.spnRegionH.setValue(rgn.height);
+					window.simulationCanvas.setRegion(rgn);
+					break;
+				}
+				//TODO: fire event for when the simulation state changes
 			}
+			
 		}
+		
 	}
 	
-	@SuppressWarnings("serial") 
-	class OpenBackgroundAction extends AbstractAction {
-		MainWindow window;
-		
-		public OpenBackgroundAction(MainWindow window) {
-			this.window = window;
-			putValue(NAME, "Open");
-			putValue(SHORT_DESCRIPTION, "Some short description");
-		}
-		public void actionPerformed(ActionEvent e) {
-			
-			JFileChooser fc = new JFileChooser();
-			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-			fc.setFileFilter(new FileNameExtensionFilter("Image Formats (*.png, *.tif, *.bmp)","png","tif","bmp"));
-			fc.setCurrentDirectory(new File(System.getProperty("user.dir")));
-			int result = fc.showOpenDialog(window);
-			if(result == JFileChooser.APPROVE_OPTION) {
-				File f = fc.getSelectedFile();
-				try {
-					window.context.loadBackground(f);
-					window.toolbox.txtBackground.setText(f.getPath());
-				}  catch (IOException e1) {
-					e1.printStackTrace();
-					JOptionPane.showMessageDialog(null, "Failed to load background image\n" + e1.getMessage());
-				}
-			}
-		}
-	}
-
 }

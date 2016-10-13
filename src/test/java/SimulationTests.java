@@ -12,7 +12,7 @@ public class SimulationTests {
 		SimulationManager m = new SimulationManager();
 		File f = new File("./images/populationgrid-binary.png");
 		try {
-			m.loadBackground(f);
+			m.loadPopulationGrid(f);
 		} catch(IOException e) {
 			
 		} finally {

@@ -1,5 +1,6 @@
 package geoptimize;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,16 +16,25 @@ import geoptimize.swing.MainWindow;
 
 
 /**
- * Main logic for the MainWindowView
- * TODO: move more of the logic here.
+ * Main logic for the Application. When key information changes, trigger the 
+ * firePropertyChanged event and the GUI will update.
  * @author Callan
  *
  */
-public class SimulationManager {
+public class SimulationManager extends AbstractModel {
 	
 	protected MainWindow mainWindow;
+	
+	protected File populationGridFile;
 	protected BufferedImage populationGrid;
 	protected BufferedImage backgroundImage;
+	
+	protected Rectangle simulationRegion = new Rectangle();
+	public Rectangle getRegion() { return simulationRegion; }
+	public void setRegion(Rectangle r) { 
+		simulationRegion.setBounds(r);
+		this.firePropertyChange("simulationRegion", null, simulationRegion);
+	}
 	
 	protected PSOSimulation simulation;
 	
@@ -32,7 +42,7 @@ public class SimulationManager {
 	public BufferedImage getPopulationGrid() { return populationGrid; }
 	
 	public SimulationManager() {
-		simulation = new PSOSimulation();
+		
 	}
 	
 	/***
@@ -48,8 +58,10 @@ public class SimulationManager {
 	}
 	
 	public void loadPopulationGrid(File f) throws IOException {
+		populationGridFile = f;
 		BufferedImage pg = ImageIO.read(f);
 		populationGrid = pg;
+		this.firePropertyChange("populationGridFile", null, populationGridFile);
 	}
 	
 	public void loadBackground(File f) throws IOException {
@@ -58,13 +70,22 @@ public class SimulationManager {
 			throw new IOException("Image raster format must be integer type");
 		}
 		backgroundImage = pg;
+		
+		this.firePropertyChange("backgroundImage", null, backgroundImage);
+		
+		/*
 		if(mainWindow != null) {
 			mainWindow.setImage(pg);
 		}
 		mainWindow.revalidate();
+		*/
 	}
 	
-	public void startSimulation() {
+	public void startSimulation() throws Exception {
+		System.out.println("Region : " + simulationRegion.toString());
+		if(populationGrid == null) throw new Exception("Population Grid not set.");
+		
+		simulation = new PSOSimulation();
 		simulation.run();
 	}
 }
