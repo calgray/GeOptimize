@@ -14,7 +14,6 @@ import geoptimize.ServiceNode;
 public class PSOParticle {
 	protected List<ServiceNode> nodes;
 	protected int nNodes;
-	protected int pBest;
 	
 	public PSOParticle(int nodes) {
 		this.nNodes = nodes;
