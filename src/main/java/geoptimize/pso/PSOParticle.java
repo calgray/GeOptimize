@@ -8,11 +8,13 @@ import geoptimize.ServiceNode;
  * A particle containing a possible solution
  * 
  * @author Callan
+ * @author blcfbggc
  *
  */
 public class PSOParticle {
 	protected List<ServiceNode> nodes;
 	protected int nNodes;
+	protected int pBest;
 	
 	public PSOParticle(int nodes) {
 		this.nNodes = nodes;
