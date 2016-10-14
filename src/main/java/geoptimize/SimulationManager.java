@@ -24,19 +24,29 @@ import geoptimize.swing.MainWindow;
 public class SimulationManager extends AbstractModel {
 	
 	protected MainWindow mainWindow;
+	protected PSOSimulation simulation;
 	
 	protected File populationGridFile;
 	protected BufferedImage populationGrid;
-	protected BufferedImage backgroundImage;
 	
-	protected Rectangle simulationRegion = new Rectangle();
-	public Rectangle getRegion() { return simulationRegion; }
+	protected BufferedImage backgroundImage;
+	protected Rectangle region = new Rectangle();
+	protected int nNodes = 1;
+	protected int range = 50;
+	protected int nIterations = 1;
+	protected int nParticles = 1;
+	
+	/* Properties */
+	public Rectangle getRegion() { return region; }
 	public void setRegion(Rectangle r) { 
-		simulationRegion.setBounds(r);
-		this.firePropertyChange("simulationRegion", null, simulationRegion);
+		region.setBounds(r);
+		this.firePropertyChange("simulationRegion", null, region);
 	}
 	
-	protected PSOSimulation simulation;
+	public void setNodes(int n) { nNodes = n; }
+	public void setRange(int n) { range = n; }
+	public void setIterations(int n) { nIterations = n; }
+	public void setParticles(int n) { nParticles = n; }
 	
 
 	public BufferedImage getPopulationGrid() { return populationGrid; }
@@ -70,22 +80,15 @@ public class SimulationManager extends AbstractModel {
 			throw new IOException("Image raster format must be integer type");
 		}
 		backgroundImage = pg;
-		
 		this.firePropertyChange("backgroundImage", null, backgroundImage);
 		
-		/*
-		if(mainWindow != null) {
-			mainWindow.setImage(pg);
-		}
-		mainWindow.revalidate();
-		*/
 	}
 	
 	public void startSimulation() throws Exception {
-		System.out.println("Region : " + simulationRegion.toString());
+		System.out.println("Region : " + region.toString());
 		if(populationGrid == null) throw new Exception("Population Grid not set.");
 		
-		simulation = new PSOSimulation();
+		simulation = new PSOSimulation(nNodes, nIterations, region, populationGrid);
 		simulation.run();
 	}
 }

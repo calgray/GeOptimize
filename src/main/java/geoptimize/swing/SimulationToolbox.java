@@ -47,12 +47,12 @@ public class SimulationToolbox extends JPanel {
 	private JLabel lblNodeSettings;
 	private JLabel lblCount;
 	private JLabel lblParticles;
-	private JSpinner spinner;
-	private JSpinner spinner_1;
+	private JSpinner spnParticles;
+	private JSpinner spnCount;
 	private JLabel lblRadius_1;
-	private JSpinner spinner_2;
+	private JSpinner spnRange;
 	private JLabel lblIterations;
-	private JSpinner spinner_3;
+	private JSpinner spnIterations;
 	private JLabel lblDatamap;
 	private JLabel lblBackground;
 	public JTextField txtPopulation;
@@ -154,36 +154,43 @@ public class SimulationToolbox extends JPanel {
 		gbc_lblCount.gridy = 4;
 		this.add(lblCount, gbc_lblCount);
 		
-		spinner_1 = new JSpinner();
+		spnCount = new JSpinner();
+		spnCount.addChangeListener((evt)-> {
+			parent.context.setNodes((Integer)spnCount.getValue());
+		});
 		GridBagConstraints gbc_spinner_1 = new GridBagConstraints();
 		gbc_spinner_1.gridwidth = 3;
 		gbc_spinner_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner_1.insets = new Insets(0, 0, 5, 0);
 		gbc_spinner_1.gridx = 1;
 		gbc_spinner_1.gridy = 4;
-		add(spinner_1, gbc_spinner_1);
+		add(spnCount, gbc_spinner_1);
 		
-		lblRadius_1 = new JLabel("Radius");
+		lblRadius_1 = new JLabel("Range");
 		GridBagConstraints gbc_lblRadius_1 = new GridBagConstraints();
+		gbc_lblRadius_1.anchor = GridBagConstraints.EAST;
 		gbc_lblRadius_1.insets = new Insets(0, 0, 5, 5);
 		gbc_lblRadius_1.gridx = 0;
 		gbc_lblRadius_1.gridy = 5;
 		add(lblRadius_1, gbc_lblRadius_1);
 		
-		spinner_2 = new JSpinner();
-		spinner_2.setModel(new SpinnerNumberModel(new Float(50), new Float(0), null, new Float(1)));
+		spnRange = new JSpinner();
+		spnRange.addChangeListener((evt)-> {
+			parent.context.setRange((Integer)spnRange.getValue());
+		});
+		spnRange.setModel(new SpinnerNumberModel(new Float(50), new Float(0), null, new Float(1)));
 		GridBagConstraints gbc_spinner_2 = new GridBagConstraints();
 		gbc_spinner_2.gridwidth = 3;
 		gbc_spinner_2.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner_2.insets = new Insets(0, 0, 5, 0);
 		gbc_spinner_2.gridx = 1;
 		gbc_spinner_2.gridy = 5;
-		add(spinner_2, gbc_spinner_2);
+		add(spnRange, gbc_spinner_2);
 		
 		lblRegion = new JLabel("Region (x, y)");
 		GridBagConstraints gbc_lblRegion = new GridBagConstraints();
 		gbc_lblRegion.anchor = GridBagConstraints.EAST;
-		gbc_lblRegion.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRegion.insets = new Insets(0, 5, 5, 5);
 		gbc_lblRegion.gridx = 0;
 		gbc_lblRegion.gridy = 6;
 		add(lblRegion, gbc_lblRegion);
@@ -218,7 +225,8 @@ public class SimulationToolbox extends JPanel {
 		
 		lblRegionwH = new JLabel("Region (w, h)");
 		GridBagConstraints gbc_lblRegionwH = new GridBagConstraints();
-		gbc_lblRegionwH.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRegionwH.anchor = GridBagConstraints.EAST;
+		gbc_lblRegionwH.insets = new Insets(0, 5, 5, 5);
 		gbc_lblRegionwH.gridx = 0;
 		gbc_lblRegionwH.gridy = 7;
 		add(lblRegionwH, gbc_lblRegionwH);
@@ -267,30 +275,37 @@ public class SimulationToolbox extends JPanel {
 		gbc_lblParticles.gridy = 9;
 		add(lblParticles, gbc_lblParticles);
 		
-		spinner = new JSpinner();
+		spnParticles = new JSpinner();
+		spnParticles.addChangeListener((evt)-> {
+			parent.context.setParticles((Integer)spnParticles.getValue());
+		});
 		GridBagConstraints gbc_spinner = new GridBagConstraints();
 		gbc_spinner.gridwidth = 3;
 		gbc_spinner.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner.insets = new Insets(0, 0, 5, 0);
 		gbc_spinner.gridx = 1;
 		gbc_spinner.gridy = 9;
-		add(spinner, gbc_spinner);
+		add(spnParticles, gbc_spinner);
 		
 		lblIterations = new JLabel("Iterations");
 		GridBagConstraints gbc_lblIterations = new GridBagConstraints();
+		gbc_lblIterations.anchor = GridBagConstraints.EAST;
 		gbc_lblIterations.insets = new Insets(0, 0, 5, 5);
 		gbc_lblIterations.gridx = 0;
 		gbc_lblIterations.gridy = 10;
 		add(lblIterations, gbc_lblIterations);
 		
-		spinner_3 = new JSpinner();
+		spnIterations = new JSpinner();
+		spnIterations.addChangeListener((evt)-> {
+			parent.context.setIterations((Integer)spnIterations.getValue());
+		});
 		GridBagConstraints gbc_spinner_3 = new GridBagConstraints();
 		gbc_spinner_3.gridwidth = 3;
 		gbc_spinner_3.fill = GridBagConstraints.HORIZONTAL;
 		gbc_spinner_3.insets = new Insets(0, 0, 5, 0);
 		gbc_spinner_3.gridx = 1;
 		gbc_spinner_3.gridy = 10;
-		add(spinner_3, gbc_spinner_3);
+		add(spnIterations, gbc_spinner_3);
 		
 		chckbxShowSwarm = new JCheckBox("Show Swarm");
 		chckbxShowSwarm.addItemListener((e) -> {
