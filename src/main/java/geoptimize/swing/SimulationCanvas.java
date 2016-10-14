@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
@@ -42,7 +43,8 @@ public class SimulationCanvas extends JComponent {
 	private float magnificationSensitivity = 1.2f;
 	private Rectangle region = new Rectangle();
 	
-	private Point mousePoint = new Point();
+	private Point cursorMapLocation = new Point();
+	private Point cursorLocation = new Point();
 	
 	public void setMagnification(float mag) {
 		if(magnification != mag && image != null) {
@@ -50,10 +52,36 @@ public class SimulationCanvas extends JComponent {
 			Dimension d = this.getSize();
 			d.width = (int)(image.getWidth(null) * magnification);
 			d.height = (int)(image.getHeight(null) * magnification);
+			
+			updateCursor();
+			
 			this.setPreferredSize(d);
 			this.revalidate();
 			this.repaint();
+			
+			//TODO: want to zoom in on current scroll position
+			//Need the repainted scrollbarsize...
+			//int width = parent.simulationScrollPane.getHorizontalScrollBar().getMaximum();
+			//int height = parent.simulationScrollPane.getVerticalScrollBar().getMaximum();
+			//parent.simulationScrollPane.getHorizontalScrollBar().setValue(width/2);
+			//parent.simulationScrollPane.getHorizontalScrollBar().setValue(height/2);
+			
+			updateCursor();
 		}
+	}
+	
+	public void updateCursor() {
+		Point p = this.getMousePosition();
+		
+		cursorLocation.setLocation(p);
+		cursorMapLocation.setLocation(p.getX() / magnification, p.getY() / magnification);
+		
+		parent.lblStatusBar.setText(
+				"GridCoord : [" + cursorMapLocation.x + " , " + cursorMapLocation.y + " ]"
+				+ " Cursor : [" + cursorLocation.x + " , " + cursorLocation.y  + "]"
+				+ " Scrollbars: [" 
+				+ parent.simulationScrollPane.getHorizontalScrollBar().getValue() + " , "
+				+ parent.simulationScrollPane.getVerticalScrollBar().getValue() + "]");
 	}
 	
 	public void zoom(int zoom) {
@@ -89,7 +117,6 @@ public class SimulationCanvas extends JComponent {
 	public SimulationCanvas(MainWindow window) {
 		parent = window;
 		setLayout(new BorderLayout(0, 0));
-		
 		
 		//TODO: load nodes from the running simulation
 		nodes = new LinkedList<ServiceNode>();
@@ -162,9 +189,8 @@ public class SimulationCanvas extends JComponent {
 		public void mouseDragged(MouseEvent e) { }
 
 		@Override
-		public void mouseMoved(MouseEvent e) {				
-			mousePoint.setLocation(e.getX() / magnification, e.getY() / magnification);
-			window.lblCursorcoords.setText("[ " + mousePoint.x + " , " + mousePoint.y + " ]");
+		public void mouseMoved(MouseEvent e) {
+			updateCursor();
 		}
 	}
 }

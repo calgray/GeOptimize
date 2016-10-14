@@ -53,7 +53,7 @@ public class MainWindow extends JFrame {
 	private JPanel mainPanel;
 	protected JPanel statusBar;
 	private JLabel lblCursor;
-	protected JLabel lblCursorcoords;
+	protected JLabel lblStatusBar;
 	
 	public MainWindow(SimulationManager context) {
 		this.context = context;
@@ -96,26 +96,18 @@ public class MainWindow extends JFrame {
 		statusBar = new JPanel();
 		mainPanel.add(statusBar, BorderLayout.SOUTH);
 		GridBagLayout gbl_statusBar = new GridBagLayout();
-		gbl_statusBar.columnWidths = new int[]{0, 0, 0};
+		gbl_statusBar.columnWidths = new int[]{0, 0};
 		gbl_statusBar.rowHeights = new int[]{14};
-		gbl_statusBar.columnWeights = new double[]{0.0, 0.0, 1.0};
+		gbl_statusBar.columnWeights = new double[]{0.0, 1.0};
 		gbl_statusBar.rowWeights = new double[]{0.0};
 		statusBar.setLayout(gbl_statusBar);
 		
-		lblCursor = new JLabel("Cursor : ");
-		GridBagConstraints gbc_lblCursor = new GridBagConstraints();
-		gbc_lblCursor.insets = new Insets(0, 5, 0, 5);
-		gbc_lblCursor.fill = GridBagConstraints.VERTICAL;
-		gbc_lblCursor.gridx = 0;
-		gbc_lblCursor.gridy = 0;
-		statusBar.add(lblCursor, gbc_lblCursor);
-		
-		lblCursorcoords = new JLabel("");
+		lblStatusBar = new JLabel("");
 		GridBagConstraints gbc_lblCursorcoords = new GridBagConstraints();
 		gbc_lblCursorcoords.insets = new Insets(0, 5, 0, 5);
-		gbc_lblCursorcoords.gridx = 1;
+		gbc_lblCursorcoords.gridx = 0;
 		gbc_lblCursorcoords.gridy = 0;
-		statusBar.add(lblCursorcoords, gbc_lblCursorcoords);
+		statusBar.add(lblStatusBar, gbc_lblCursorcoords);
 		
 		
 		toolbox = new SimulationToolbox(this);
