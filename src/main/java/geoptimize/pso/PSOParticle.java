@@ -8,7 +8,6 @@ import geoptimize.ServiceNode;
  * A particle containing a possible solution
  * 
  * @author Callan
- * @author blcfbggc
  *
  */
 public class PSOParticle {
