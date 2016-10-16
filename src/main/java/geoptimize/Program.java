@@ -2,6 +2,7 @@
 package geoptimize;
 
 import java.awt.Rectangle;
+import java.io.File;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -28,6 +29,15 @@ public class Program {
 			public void run() {
 				MainWindow window = manager.createWindow();
 				manager.setRegion(new Rectangle(2000, 2000, 1000, 1000));
+				
+				//save some manual testing time by loading these at startup
+				try {
+					manager.loadPopulationGrid(new File("./images/populationgrid-uint16.png"));
+					manager.loadBackground(new File("./images/highres_combined.png"));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				
 				window.setVisible(true);
 			}
 		});

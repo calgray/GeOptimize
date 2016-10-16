@@ -64,7 +64,7 @@ public class MainWindow extends JFrame {
 		
 		context.addPropertyChangeListener(new MainWindowPCL(this));
 		
-		this.setMinimumSize(new Dimension(600, 400));
+		this.setMinimumSize(new Dimension(600, 500));
 		initUI();
 	}
 	
@@ -136,8 +136,9 @@ public class MainWindow extends JFrame {
 					break;
 				}
 				case "backgroundImageFile": {
+					System.out.println("BGIF");
 					File f = (File)evt.getNewValue();
-					window.toolbox.txtPopulation.setText(f.getAbsolutePath());
+					window.toolbox.txtBackground.setText(f.getAbsolutePath());
 					break;
 				}
 				case "backgroundImage": {
@@ -154,7 +155,10 @@ public class MainWindow extends JFrame {
 					window.simulationCanvas.setRegion(rgn);
 					break;
 				}
-				//TODO: fire event for when the simulation state changes
+				case "simulation": {
+					window.simulationCanvas.paintImmediately(window.simulationCanvas.getVisibleRect());
+					break;
+				}
 			}
 			
 		}

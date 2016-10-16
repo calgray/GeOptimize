@@ -68,6 +68,7 @@ public class SimulationToolbox extends JPanel {
 	protected JSpinner spnRegionH;
 	private JLabel lblRegionwH;
 	private JButton btnStep;
+	private JButton btnRun;
 	
 	public SimulationToolbox(MainWindow mainWindow) {
 		this.parent = mainWindow;
@@ -79,9 +80,9 @@ public class SimulationToolbox extends JPanel {
 		
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[] {0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		gbl_panel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		gbl_panel.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0};
-		gbl_panel.rowWeights = new double[]{0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+		gbl_panel.rowWeights = new double[]{0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
 		this.setLayout(gbl_panel);
 		
 		lblDatamap = new JLabel("Population");
@@ -155,6 +156,7 @@ public class SimulationToolbox extends JPanel {
 		this.add(lblCount, gbc_lblCount);
 		
 		spnCount = new JSpinner();
+		spnCount.setModel(new SpinnerNumberModel(new Integer(1), null, null, new Integer(1)));
 		spnCount.addChangeListener((evt)-> {
 			parent.context.setNodes((Integer)spnCount.getValue());
 		});
@@ -276,6 +278,7 @@ public class SimulationToolbox extends JPanel {
 		add(lblParticles, gbc_lblParticles);
 		
 		spnParticles = new JSpinner();
+		spnParticles.setModel(new SpinnerNumberModel(new Integer(10), null, null, new Integer(1)));
 		spnParticles.addChangeListener((evt)-> {
 			parent.context.setParticles((Integer)spnParticles.getValue());
 		});
@@ -296,6 +299,7 @@ public class SimulationToolbox extends JPanel {
 		add(lblIterations, gbc_lblIterations);
 		
 		spnIterations = new JSpinner();
+		spnIterations.setModel(new SpinnerNumberModel(new Integer(100), null, null, new Integer(1)));
 		spnIterations.addChangeListener((evt)-> {
 			parent.context.setIterations((Integer)spnIterations.getValue());
 		});
@@ -333,31 +337,53 @@ public class SimulationToolbox extends JPanel {
 		gbc_chckbxShowGBest.gridy = 12;
 		add(chckbxShowGBest, gbc_chckbxShowGBest);
 		
-		btnStart = new JButton("Start");
+		btnStart = new JButton("New Simulation");
 		btnStart.addActionListener((evt) -> {
 			try {
-				parent.context.startSimulation();
+				parent.context.newSimulation();
 			} catch(Exception e) {
-				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
 		});
 		btnStart.setAlignmentY(Component.TOP_ALIGNMENT);
 		GridBagConstraints gbc_btnStart = new GridBagConstraints();
 		gbc_btnStart.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnStart.insets = new Insets(0, 5, 5, 5);
+		gbc_btnStart.insets = new Insets(0, 5, 5, 0);
 		gbc_btnStart.gridwidth = 4;
 		gbc_btnStart.gridx = 0;
 		gbc_btnStart.gridy = 13;
 		this.add(btnStart, gbc_btnStart);
 		
+		btnRun = new JButton("Run");
+		btnRun.addActionListener((evt) -> {
+			try {
+				parent.context.runSimulation();
+			} catch(Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+			}
+		});
+		GridBagConstraints gbc_btnRun = new GridBagConstraints();
+		gbc_btnRun.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnRun.gridwidth = 4;
+		gbc_btnRun.insets = new Insets(0, 5, 5, 0);
+		gbc_btnRun.gridx = 0;
+		gbc_btnRun.gridy = 14;
+		add(btnRun, gbc_btnRun);
+		
 		btnStep = new JButton("Step");
+		btnStep.addActionListener((evt) -> {
+			try {
+				parent.context.stepSimulation();
+			} catch(Exception e) {
+				JOptionPane.showMessageDialog(null, e.toString());
+			}
+		});
 		GridBagConstraints gbc_btnStep = new GridBagConstraints();
 		gbc_btnStep.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnStep.gridwidth = 4;
-		gbc_btnStep.insets = new Insets(0, 5, 5, 5);
+		gbc_btnStep.insets = new Insets(0, 5, 5, 0);
 		gbc_btnStep.gridx = 0;
-		gbc_btnStep.gridy = 14;
+		gbc_btnStep.gridy = 15;
 		add(btnStep, gbc_btnStep);
 	}
 }

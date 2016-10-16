@@ -29,15 +29,19 @@ public class SimulationManager extends AbstractModel {
 	protected File populationGridFile;
 	protected BufferedImage populationGrid;
 	
+	protected File backgroundImageFile;
 	protected BufferedImage backgroundImage;
+	
+	//TODO: may want view to update these values when initialized
 	protected Rectangle region = new Rectangle();
 	protected int nNodes = 1;
 	protected int range = 50;
-	protected int nIterations = 1;
-	protected int nParticles = 1;
+	protected int nParticles = 10;
+	protected int nIterations = 100;
 	
 	/* Properties */
 	public Rectangle getRegion() { return region; }
+	
 	public void setRegion(Rectangle r) { 
 		region.setBounds(r);
 		this.firePropertyChange("simulationRegion", null, region);
@@ -48,8 +52,8 @@ public class SimulationManager extends AbstractModel {
 	public void setIterations(int n) { nIterations = n; }
 	public void setParticles(int n) { nParticles = n; }
 	
-
 	public BufferedImage getPopulationGrid() { return populationGrid; }
+	public PSOSimulation getSimulation() { return simulation; }
 	
 	public SimulationManager() {
 		
@@ -75,20 +79,46 @@ public class SimulationManager extends AbstractModel {
 	}
 	
 	public void loadBackground(File f) throws IOException {
+		backgroundImageFile = f;
 		BufferedImage pg = ImageIO.read(f);
 		if(pg.getSampleModel().getDataType() == 4) {
 			throw new IOException("Image raster format must be integer type");
 		}
 		backgroundImage = pg;
+		this.firePropertyChange("backgroundImageFile", null, backgroundImageFile);
 		this.firePropertyChange("backgroundImage", null, backgroundImage);
 		
 	}
 	
-	public void startSimulation() throws Exception {
+	/***
+	 * Start and run the entire simulation
+	 * @throws Exception
+	 */
+	public void newSimulation() throws Exception {
 		System.out.println("Region : " + region.toString());
 		if(populationGrid == null) throw new Exception("Population Grid not set.");
 		
-		simulation = new PSOSimulation(nNodes, nIterations, region, populationGrid);
-		simulation.run();
+		simulation = new PSOSimulation(nNodes, range, nParticles, nIterations, region, populationGrid);
+		//simulation.step();
+		this.firePropertyChange("simulation", null, simulation);
+		
+	}
+
+	public void runSimulation() {
+		// TODO: call stepSimulation multiple times, allowing for screen updates
+		while(simulation.getCurrentIteration() < simulation.getMaxIterations()) {
+				simulation.step();
+				this.firePropertyChange("simulation", null, simulation);
+				try {
+					Thread.sleep(10);
+				} catch(Exception e) {}
+		}
+	}
+
+	public void stepSimulation() throws Exception {
+		if(simulation == null) throw new Exception("must create a new simuation");
+		simulation.step();
+		this.firePropertyChange("simulation", null, simulation);
+		
 	}
 }

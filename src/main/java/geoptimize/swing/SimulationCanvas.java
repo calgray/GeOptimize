@@ -1,6 +1,7 @@
 package geoptimize.swing;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import geoptimize.ServiceNode;
+import geoptimize.pso.PSOParticle;
+import geoptimize.pso.PSOSimulation;
+
 import java.awt.BorderLayout;
 import javax.swing.JProgressBar;
 
@@ -32,7 +36,9 @@ public class SimulationCanvas extends JComponent {
 	private static final long serialVersionUID = -2480881754680088455L;
 	
 	//TODO: will want to load this list from the current PSOSimulation's gbest
-	private LinkedList<ServiceNode> nodes;
+	private LinkedList<ServiceNode> dummyNodes;
+	private PSOSimulation simulation;
+
 	
 	private MainWindow parent;
 	
@@ -85,7 +91,7 @@ public class SimulationCanvas extends JComponent {
 	}
 	
 	public void zoom(int zoom) {
-		float mag = geoptimize.helper.Math.clamp(minMagnification, maxMagnification, (float)(magnification*Math.pow(magnificationSensitivity, zoom)));
+		float mag = geoptimize.helper.MathHelper.clamp(minMagnification, maxMagnification, (float)(magnification*Math.pow(magnificationSensitivity, zoom)));
 		setMagnification(mag);
 	}
 	
@@ -118,11 +124,11 @@ public class SimulationCanvas extends JComponent {
 		parent = window;
 		setLayout(new BorderLayout(0, 0));
 		
-		//TODO: load nodes from the running simulation
-		nodes = new LinkedList<ServiceNode>();
-		nodes.add(new ServiceNode(2200, 2400, 80));
-		nodes.add(new ServiceNode(2400, 2600, 80));
-		nodes.add(new ServiceNode(2400, 2800, 80));
+		//Dummy simulation for when there is no simulation started/loaded
+		dummyNodes = new LinkedList<ServiceNode>();
+		dummyNodes.add(new ServiceNode(2200, 2400, 80));
+		dummyNodes.add(new ServiceNode(2400, 2600, 80));
+		dummyNodes.add(new ServiceNode(2400, 2800, 80));
 		
 		this.addMouseMotionListener(new MouseCoordListener(window));
 		
@@ -147,16 +153,32 @@ public class SimulationCanvas extends JComponent {
 		
 		Color fillColor = new Color(0f, 1f, 0.5f, 0.6f);
 		
-		graphics.setColor(fillColor);
-		for(ServiceNode node : nodes) {
-			Point p = node.getPosition();
-			float r = node.getRange();
+		//might not need this
+		simulation = parent.context.getSimulation();
+		
+		if(simulation == null) {
+			//show dummyNodes
+		}
+		else {
+			graphics.setColor(fillColor);
 			
-			graphics.fillOval(
-					(int)(p.x * magnification),
-					(int)(p.y * magnification),
-					(int)(r * magnification),
-					(int)(r * magnification));
+			//show all particles
+			for(PSOParticle particle : simulation.getParticles()) {
+				
+				List<ServiceNode> nodes = particle.getNodes();
+				
+				for(ServiceNode node : particle.getNodes()) {
+					Point p = node.getPosition();
+					float r = node.getRange();
+					
+					graphics.fillOval(
+							(int)(p.x * magnification),
+							(int)(p.y * magnification),
+							(int)(r * magnification),
+							(int)(r * magnification));
+				}
+			}
+			
 		}
 	}
 	
