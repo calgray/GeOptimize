@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import geoptimize.ServiceNode;
 import geoptimize.pso.PSOParticle;
 import geoptimize.pso.PSOSimulation;
+import geoptimize.pso.PSOSolution;
 
 import java.awt.BorderLayout;
 import javax.swing.JProgressBar;
@@ -151,8 +152,6 @@ public class SimulationCanvas extends JComponent {
 	
 	private void drawNodes(Graphics graphics) {
 		
-		Color fillColor = new Color(0f, 1f, 0.5f, 0.6f);
-		
 		//might not need this
 		simulation = parent.context.getSimulation();
 		
@@ -160,23 +159,52 @@ public class SimulationCanvas extends JComponent {
 			//show dummyNodes
 		}
 		else {
-			graphics.setColor(fillColor);
 			
 			//show all particles
+			Color textColor = Color.RED;
+			Color nodeColor = new Color(0f, 1f, 0.5f, 0.6f);
+			
+			int particleIndex = 0;
 			for(PSOParticle particle : simulation.getParticles()) {
 				
-				List<ServiceNode> nodes = particle.getNodes();
+				List<ServiceNode> nodes = particle.getCurrent().getNodes();
 				
-				for(ServiceNode node : particle.getNodes()) {
+				
+				for(ServiceNode node : nodes) {
 					Point p = node.getPosition();
 					float r = node.getRange();
 					
+					
+					graphics.setColor(nodeColor);
 					graphics.fillOval(
+							(int)((p.x - r) * magnification),
+							(int)((p.y - r) * magnification),
+							(int)(r * 2 * magnification),
+							(int)(r * 2 * magnification));
+					
+					graphics.setColor(textColor);
+					graphics.drawString("Particle:" + particleIndex, 
 							(int)(p.x * magnification),
-							(int)(p.y * magnification),
-							(int)(r * magnification),
-							(int)(r * magnification));
+							(int)(p.y * magnification));
+					
 				}
+				particleIndex++;
+			}
+			
+			//show globalbest
+			nodeColor = new Color(0f, 0.2f, 1.0f, 0.6f);
+			graphics.setColor(nodeColor);
+			
+			List<ServiceNode> nodes = simulation.getGlobalBest().getNodes();
+			for(ServiceNode node : nodes) {
+				Point p = node.getPosition();
+				float r = node.getRange();
+				
+				graphics.fillOval(
+						(int)((p.x - r) * magnification),
+						(int)((p.y - r) * magnification),
+						(int)(r * 2 * magnification),
+						(int)(r * 2 * magnification));
 			}
 			
 		}

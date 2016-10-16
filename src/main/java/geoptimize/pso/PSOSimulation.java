@@ -2,6 +2,7 @@ package geoptimize.pso;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -20,8 +21,8 @@ public class PSOSimulation {
 	protected LinkedList<PSOParticle> particles;
 	public LinkedList<PSOParticle> getParticles() { return particles; }
 	
-	protected PSOParticle globalBest;
-	public PSOParticle getGlobalBet() { return globalBest; }
+	protected PSOSolution globalBest;
+	public PSOSolution getGlobalBest() { return globalBest; }
 	
 	protected Distribution particleDistribution;
 
@@ -35,10 +36,19 @@ public class PSOSimulation {
 	public int getCurrentIteration() { return currentIteration; }
 	
 	protected Rectangle region;
-	protected BufferedImage data;
+	protected float[] data;
 	
 	
-	public PSOSimulation(int nNodes, int range, int nParticles, int nIterations, Rectangle region, BufferedImage data) {
+	public PSOSimulation(int nNodes, int range, int nParticles, int nIterations, Rectangle region, BufferedImage dataimg) {
+		
+		System.out.println("New Simulation!");
+		System.out.println("nNodes : " + nNodes);
+		System.out.println("range : " + range);
+		System.out.println("Particles : " + nParticles);
+		System.out.println("Iterations : " + nIterations);
+		System.out.println("Region : " + region);
+		System.out.println("Data : " + dataimg);
+		
 		this.nNodes = nNodes;
 		this.range = range;
 		
@@ -46,38 +56,67 @@ public class PSOSimulation {
 		this.nIterations = nIterations;
 		
 		this.region = region;
-		this.data = data;
 		
+		
+		this.data = new float[dataimg.getWidth() * dataimg.getHeight()];
+		DataBuffer b = dataimg.getRaster().getDataBuffer();
+		int width = dataimg.getWidth();
+		for(int y = 0; y < dataimg.getHeight(); y++) {
+			for(int x = 0; x < dataimg.getWidth(); x++) {
+				this.data[width*y+x] = b.getElemFloat(width*y+x);
+			}
+		}
+		
+		//Create random particles
 		this.particles = new LinkedList<PSOParticle>();
 		for(int i = 0; i < nParticles; i++) {
 			particles.add(new PSOParticle(nNodes, range, region));
 		}
 		
-		System.out.println("Running!");
-		System.out.println("nNodes : " + nNodes);
-		System.out.println("range : " + range);
-		System.out.println("Particles : " + nParticles);
-		System.out.println("Iterations : " + nIterations);
-		System.out.println("Region : " + region);
-		System.out.println("Data : " + data);
-	}
-	
-	public void step() {
-		Random r = new Random();
+		//calculate initial fitness for particles
 		for(PSOParticle p : particles) {
-			
-			for(ServiceNode n : p.getNodes())
-			{
-				n.setPosition(
-					MathHelper.clamp(region.x, region.x + region.width, n.getPosition().x - 5 + r.nextInt(11)), 
-					MathHelper.clamp(region.y, region.y + region.height, n.getPosition().y - 5 + r.nextInt(11))
-				);
-			}
+			p.updateFitness(data);
 		}
 		
-		System.out.println("iteration : " + currentIteration + "/" + nIterations);
+		//update initial global best
+		float globalBestFitness = particles.getFirst().localBest.fitness;
+		int globalBestIndex = 0;
+		for(int i = 0; i < particles.size(); i++) {
+			if(particles.get(i).localBest.fitness > globalBestFitness) {
+				globalBestIndex = i;
+				globalBestFitness = particles.get(i).localBest.fitness;
+			}
+		}
+		globalBest = (PSOSolution)particles.get(globalBestIndex).localBest.clone();
+	}
+	
+	/***
+	 * Simulation step, move all particles, update their fitness,
+	 * calculate newer localbests and global bests
+	 */
+	public void step() {
+		//move all particles
+		for(PSOParticle p : particles) {
+			p.step(globalBest);
+			p.updateFitness(data);
+		}
+		
+		//update global best
+		float globalBestFitness = particles.getFirst().localBest.fitness;
+		int globalBestIndex = 0;
+		for(int i = 0; i < particles.size(); i++) {
+			if(particles.get(i).localBest.fitness > globalBestFitness) {
+				globalBestIndex = i;
+				globalBestFitness = particles.get(i).localBest.fitness;
+			}
+		}
+		globalBest = (PSOSolution)particles.get(globalBestIndex).localBest.clone();
 		
 		currentIteration++;
+		
+		System.out.println("====== Node 0 =======");
+		System.out.println("Position:" + particles.get(0).current.getNodes().get(0).getPosition());
+		System.out.println("Velocity:" + particles.get(0).velocities[0]);
 		
 	}
 }

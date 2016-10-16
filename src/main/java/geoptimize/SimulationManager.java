@@ -109,7 +109,7 @@ public class SimulationManager extends AbstractModel {
 				simulation.step();
 				this.firePropertyChange("simulation", null, simulation);
 				try {
-					Thread.sleep(10);
+					//Thread.sleep(10);
 				} catch(Exception e) {
 					
 				}

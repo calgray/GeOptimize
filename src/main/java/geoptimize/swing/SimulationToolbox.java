@@ -375,6 +375,7 @@ public class SimulationToolbox extends JPanel {
 			try {
 				parent.context.stepSimulation();
 			} catch(Exception e) {
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
 		});

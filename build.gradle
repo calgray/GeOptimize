@@ -22,6 +22,8 @@ dependencies {
 	compile 'com.nativelibs4java:javacl:1.0.0-RC3'
 	//Need this for ImageIO to read GeoTIF
 	compile 'com.sun.media:jai_imageio:1.2-pre-dr-b04'
+	compile 'javax.vecmath:vecmath:1.5.2'
+	
 	
     testCompile 'junit:junit:4.12'
 	// testCompile 'org.testng:testng:6.8.1'

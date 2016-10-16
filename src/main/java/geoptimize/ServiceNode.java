@@ -14,6 +14,7 @@ import java.awt.Point;
  */
 public class ServiceNode {
 	
+	//TODO: maybe change position to Vector2f, might work better with floating velocity.
 	private Point position;
 	private int range;
 	
@@ -40,5 +41,11 @@ public class ServiceNode {
 	public ServiceNode(Point position, int range) {
 		this.position = new Point(position);
 		this.range = range;
+	}
+	
+	@Override
+	public Object clone() {
+		return new ServiceNode(this.position.x, this.position.y, this.range);
+		
 	}
 }
