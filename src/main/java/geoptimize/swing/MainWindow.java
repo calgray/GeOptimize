@@ -13,7 +13,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import geoptimize.SimulationManager;
 import geoptimize.ServiceNode;
-import geoptimize.SimulationController;
 
 
 /**
@@ -27,7 +26,6 @@ public class MainWindow extends JFrame {
 
 	//Business Objects
 	protected SimulationManager context;
-	protected SimulationController controller;
 	
 	//TODO: these might need to move to context
 	protected boolean showSwarm;

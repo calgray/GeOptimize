@@ -313,7 +313,7 @@ public class SimulationToolbox extends JPanel {
 		
 		chckbxShowSwarm = new JCheckBox("Show Swarm");
 		chckbxShowSwarm.addItemListener((e) -> {
-			parent.controller.setShowSwarm(e.getStateChange() == ItemEvent.SELECTED);
+			parent.simulationCanvas.setShowSwarm(e.getStateChange() == ItemEvent.SELECTED);
 		});
 		
 		GridBagConstraints gbc_chckbxShowSwarm = new GridBagConstraints();
@@ -326,7 +326,7 @@ public class SimulationToolbox extends JPanel {
 		
 		chckbxShowGBest = new JCheckBox("Show GBest");
 		chckbxShowGBest.addItemListener((e) -> {
-			parent.controller.setShowGBest(e.getStateChange() == ItemEvent.SELECTED);
+			parent.simulationCanvas.setShowGBest(e.getStateChange() == ItemEvent.SELECTED);
 		});
 		
 		GridBagConstraints gbc_chckbxShowGBest = new GridBagConstraints();

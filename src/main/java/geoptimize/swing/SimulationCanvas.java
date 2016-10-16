@@ -43,6 +43,9 @@ public class SimulationCanvas extends JComponent {
 	
 	private MainWindow parent;
 	
+	private boolean showSwarm = true;
+	private boolean showGBest = true;
+	
 	private Image image;
 	private float magnification = 1;
 	private float minMagnification = 0.01f;
@@ -102,6 +105,14 @@ public class SimulationCanvas extends JComponent {
 	
 	public void zoomOut() { 
 		setMagnification((magnification > minMagnification) ? magnification/magnificationSensitivity : magnification);
+	}
+	
+	public void setShowSwarm(boolean b) {
+		showSwarm = b;
+	}
+
+	public void setShowGBest(boolean b) {
+		showGBest = b;
 	}
 	
 	public void setBackgroundImage(Image image) {
@@ -164,49 +175,51 @@ public class SimulationCanvas extends JComponent {
 			Color textColor = Color.RED;
 			Color nodeColor = new Color(0f, 1f, 0.5f, 0.6f);
 			
-			int particleIndex = 0;
-			for(PSOParticle particle : simulation.getParticles()) {
+			if(showSwarm) {
+				int particleIndex = 0;
+				for(PSOParticle particle : simulation.getParticles()) {
+					
+					List<ServiceNode> nodes = particle.getCurrent().getNodes();
+					
+					for(ServiceNode node : nodes) {
+						Point p = node.getPosition();
+						float r = node.getRange();
+						
+						
+						graphics.setColor(nodeColor);
+						graphics.fillOval(
+								(int)((p.x - r) * magnification),
+								(int)((p.y - r) * magnification),
+								(int)(r * 2 * magnification),
+								(int)(r * 2 * magnification));
+						
+						graphics.setColor(textColor);
+						graphics.drawString("Particle:" + particleIndex, 
+								(int)(p.x * magnification),
+								(int)(p.y * magnification));
+						
+					}
+					particleIndex++;
+				}
+			}
+			
+			//show globalbest
+			if(showGBest) {
+				nodeColor = new Color(0f, 0.2f, 1.0f, 0.6f);
+				graphics.setColor(nodeColor);
 				
-				List<ServiceNode> nodes = particle.getCurrent().getNodes();
-				
-				
+				List<ServiceNode> nodes = simulation.getGlobalBest().getNodes();
 				for(ServiceNode node : nodes) {
 					Point p = node.getPosition();
 					float r = node.getRange();
 					
-					
-					graphics.setColor(nodeColor);
 					graphics.fillOval(
 							(int)((p.x - r) * magnification),
 							(int)((p.y - r) * magnification),
 							(int)(r * 2 * magnification),
 							(int)(r * 2 * magnification));
-					
-					graphics.setColor(textColor);
-					graphics.drawString("Particle:" + particleIndex, 
-							(int)(p.x * magnification),
-							(int)(p.y * magnification));
-					
 				}
-				particleIndex++;
 			}
-			
-			//show globalbest
-			nodeColor = new Color(0f, 0.2f, 1.0f, 0.6f);
-			graphics.setColor(nodeColor);
-			
-			List<ServiceNode> nodes = simulation.getGlobalBest().getNodes();
-			for(ServiceNode node : nodes) {
-				Point p = node.getPosition();
-				float r = node.getRange();
-				
-				graphics.fillOval(
-						(int)((p.x - r) * magnification),
-						(int)((p.y - r) * magnification),
-						(int)(r * 2 * magnification),
-						(int)(r * 2 * magnification));
-			}
-			
 		}
 	}
 	
