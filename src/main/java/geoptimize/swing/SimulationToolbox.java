@@ -312,6 +312,7 @@ public class SimulationToolbox extends JPanel {
 		add(spnIterations, gbc_spinner_3);
 		
 		chckbxShowSwarm = new JCheckBox("Show Swarm");
+		chckbxShowSwarm.setSelected(true);
 		chckbxShowSwarm.addItemListener((e) -> {
 			parent.simulationCanvas.setShowSwarm(e.getStateChange() == ItemEvent.SELECTED);
 		});
@@ -325,6 +326,7 @@ public class SimulationToolbox extends JPanel {
 		add(chckbxShowSwarm, gbc_chckbxShowSwarm);
 		
 		chckbxShowGBest = new JCheckBox("Show GBest");
+		chckbxShowGBest.setSelected(true);
 		chckbxShowGBest.addItemListener((e) -> {
 			parent.simulationCanvas.setShowGBest(e.getStateChange() == ItemEvent.SELECTED);
 		});
@@ -342,6 +344,7 @@ public class SimulationToolbox extends JPanel {
 			try {
 				parent.context.newSimulation();
 			} catch(Exception e) {
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
 		});
@@ -359,6 +362,7 @@ public class SimulationToolbox extends JPanel {
 			try {
 				parent.context.runSimulation();
 			} catch(Exception e) {
+				e.printStackTrace();
 				JOptionPane.showMessageDialog(null, e.toString());
 			}
 		});

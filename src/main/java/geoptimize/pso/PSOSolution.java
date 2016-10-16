@@ -12,6 +12,7 @@ import geoptimize.ServiceNode;
 public class PSOSolution {
 	protected List<ServiceNode> nodes;
 	protected float fitness;
+	public float getFitness() { return fitness; }
 	
 	public List<ServiceNode> getNodes() { return nodes; }
 	
@@ -43,8 +44,10 @@ public class PSOSolution {
 	 * could extend this using a bridge or abstract factory pattern
 	 * @param data
 	 */
-	public float updateFitness(float[] data) {
-		return simpleFitness(data);
+	public float updateFitness(float[] data, Rectangle region) {
+		//fitness = simpleFitness(data);
+		fitness = betterFitness(data, region);
+		return fitness;
 	}
 	
 	/***
@@ -73,19 +76,50 @@ public class PSOSolution {
 		
 	}
 	
-	private float betterFitness(BufferedImage data) {
+	/***
+	 * TODO: currently broken
+	 * @param data
+	 * @param region
+	 * @return
+	 */
+	private float betterFitness(float[] data, Rectangle region) {
 		//======================================
 		//pixel by pixel fitness
-		//fitness = 0;
-		//for(int y = (int)region.getMinY(); y < region.getMaxY(); y++) {
-		//	for(int x = (int)region.getMinX(); x < region.getMaxX(); x++) {
-			
-		//	}
-		//}
-		return 0;
+		
+		//TODO: change to datagrid object, has width and height
+		int width = 6382;
+		int height = 3821;
+		
+		
+		float[] inrange = new float[region.width * region.height];
+		
+		
+		for(int y = (int)region.getMinY(); y < region.getMaxY(); y++) {
+			for(int x = (int)region.getMinX(); x < region.getMaxX(); x++) {
+				for(ServiceNode n : nodes) {
+					int xdist = x - n.getPosition().x;
+					int ydist = y - n.getPosition().y;
+					int distsqr = xdist*xdist+ydist*ydist;
+					
+					if(distsqr < n.getRange()*n.getRange()) {
+						int rx = x - region.x;
+						int ry = y - region.y;
+						inrange[ry*region.width + rx] = data[y*width+x];
+					}
+					
+				}
+			}
+		}
+		
+		fitness = 0;
+		for(int ry = 0; ry < region.height; ry++) {
+			for(int rx = 0; rx < region.width; rx++) {
+				fitness += inrange[ry*region.width+rx];
+			}
+		}
+		
+		return fitness;
 	}
-	
-	
 	
 	/***
 	 * Create a random solution for a given number of nodes, all 

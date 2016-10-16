@@ -198,6 +198,7 @@ public class SimulationCanvas extends JComponent {
 								(int)(p.x * magnification),
 								(int)(p.y * magnification));
 						
+						
 					}
 					particleIndex++;
 				}
@@ -218,6 +219,11 @@ public class SimulationCanvas extends JComponent {
 							(int)((p.y - r) * magnification),
 							(int)(r * 2 * magnification),
 							(int)(r * 2 * magnification));
+					
+					graphics.setColor(textColor);
+					graphics.drawString("fitness:" + simulation.getGlobalBest().getFitness(), 
+							(int)(p.x * magnification),
+							(int)(p.y * magnification + 10));
 				}
 			}
 		}

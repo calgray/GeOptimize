@@ -33,7 +33,7 @@ public class PSOParticle {
 	protected Rectangle region;
 	
 	//TODO: might want to move these to the GUI
-	static float localBestWeight = 0.0f;
+	static float localBestWeight = 0.5f;
 	static float globalBestWeight = 0.5f;
 	
 	public PSOSolution getCurrent() { return current; }
@@ -75,7 +75,7 @@ public class PSOParticle {
 	}
 	
 	public void updateFitness(float[] data) {
-		current.updateFitness(data);
+		current.updateFitness(data, region);
 		
 		if(current.fitness > localBest.fitness) {
 			localBest = (PSOSolution)current.clone();
