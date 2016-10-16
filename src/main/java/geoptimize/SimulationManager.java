@@ -99,7 +99,6 @@ public class SimulationManager extends AbstractModel {
 		if(populationGrid == null) throw new Exception("Population Grid not set.");
 		
 		simulation = new PSOSimulation(nNodes, range, nParticles, nIterations, region, populationGrid);
-		//simulation.step();
 		this.firePropertyChange("simulation", null, simulation);
 		
 	}
@@ -111,7 +110,9 @@ public class SimulationManager extends AbstractModel {
 				this.firePropertyChange("simulation", null, simulation);
 				try {
 					Thread.sleep(10);
-				} catch(Exception e) {}
+				} catch(Exception e) {
+					
+				}
 		}
 	}
 

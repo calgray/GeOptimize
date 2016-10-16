@@ -136,7 +136,6 @@ public class MainWindow extends JFrame {
 					break;
 				}
 				case "backgroundImageFile": {
-					System.out.println("BGIF");
 					File f = (File)evt.getNewValue();
 					window.toolbox.txtBackground.setText(f.getAbsolutePath());
 					break;
