@@ -97,14 +97,10 @@ public class PSOParticle {
 		
 		for(int i = 0; i < nNodes; i++) {
 			
-			System.out.println("Before: " + velocities[i].x);
-			
 			velocities[i].x = 
 					inertias[i] * velocities[i].x +
 					localBestWeight  * (r.nextInt(rr) - rrmoh) * (localBest.nodes.get(i).getPosition().x  - current.nodes.get(i).getPosition().x) +
 					globalBestWeight * (r.nextInt(rr) - rrmoh) * (globalBest.nodes.get(i).getPosition().x - current.nodes.get(i).getPosition().x);
-			
-			System.out.println("After: " + velocities[i].x);
 			
 			velocities[i].y =
 					inertias[i] * velocities[i].y +

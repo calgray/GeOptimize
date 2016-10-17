@@ -113,10 +113,5 @@ public class PSOSimulation {
 		globalBest = (PSOSolution)particles.get(globalBestIndex).localBest.clone();
 		
 		currentIteration++;
-		
-		System.out.println("====== Node 0 =======");
-		System.out.println("Position:" + particles.get(0).current.getNodes().get(0).getPosition());
-		System.out.println("Velocity:" + particles.get(0).velocities[0]);
-		
 	}
 }

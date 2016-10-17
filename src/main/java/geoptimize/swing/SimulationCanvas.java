@@ -207,13 +207,14 @@ public class SimulationCanvas extends JComponent {
 			//show globalbest
 			if(showGBest) {
 				nodeColor = new Color(0f, 0.2f, 1.0f, 0.6f);
-				graphics.setColor(nodeColor);
+				
 				
 				List<ServiceNode> nodes = simulation.getGlobalBest().getNodes();
 				for(ServiceNode node : nodes) {
 					Point p = node.getPosition();
 					float r = node.getRange();
 					
+					graphics.setColor(nodeColor);
 					graphics.fillOval(
 							(int)((p.x - r) * magnification),
 							(int)((p.y - r) * magnification),
