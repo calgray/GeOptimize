@@ -6,6 +6,7 @@ import java.awt.image.DataBuffer;
 import java.util.LinkedList;
 import java.util.Random;
 
+import geoptimize.GridData;
 import geoptimize.ServiceNode;
 import geoptimize.helper.MathHelper;
 
@@ -36,7 +37,7 @@ public class PSOSimulation {
 	public int getCurrentIteration() { return currentIteration; }
 	
 	protected Rectangle region;
-	protected float[] data;
+	protected GridData data;
 	
 	
 	public PSOSimulation(int nNodes, int range, int nParticles, int nIterations, Rectangle region, BufferedImage dataimg) {
@@ -57,15 +58,7 @@ public class PSOSimulation {
 		
 		this.region = region;
 		
-		
-		this.data = new float[dataimg.getWidth() * dataimg.getHeight()];
-		DataBuffer b = dataimg.getRaster().getDataBuffer();
-		int width = dataimg.getWidth();
-		for(int y = 0; y < dataimg.getHeight(); y++) {
-			for(int x = 0; x < dataimg.getWidth(); x++) {
-				this.data[width*y+x] = b.getElemFloat(width*y+x);
-			}
-		}
+		this.data = new GridData(dataimg);
 		
 		//Create random particles
 		this.particles = new LinkedList<PSOParticle>();

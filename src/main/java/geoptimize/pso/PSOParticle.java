@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.Vector;
 import javax.vecmath.Vector2f;
 
+import geoptimize.GridData;
 import geoptimize.ServiceNode;
 import geoptimize.helper.MathHelper;
 
@@ -74,7 +75,7 @@ public class PSOParticle {
 		return p;
 	}
 	
-	public void updateFitness(float[] data) {
+	public void updateFitness(GridData data) {
 		current.updateFitness(data, region);
 		
 		if(current.fitness > localBest.fitness) {
@@ -84,7 +85,7 @@ public class PSOParticle {
 	
 	/***
 	 * Steps the current solution using particle data.
-	 * http://tracer.uc3m.es/tws/pso/basics.html
+	 * Algorithm used from http://tracer.uc3m.es/tws/pso/basics.html
 	 * @param globalBest
 	 */
 	public void step(PSOSolution globalBest) {
