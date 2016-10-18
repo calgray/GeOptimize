@@ -54,14 +54,17 @@ public class SimulationManager extends AbstractModel {
 	//TODO: do something with these values
 	public void setLBestWeight(float weight) {
 		this.lbestWeight = weight;
+		this.firePropertyChange("simulationSettings", null, null);
 	}
 	
 	public void setGBestWeight(float weight) {
 		this.gbestWeight = weight;
+		this.firePropertyChange("simulationSettings", null, null);
 	}
 	
 	public void setInertia(float inertia) {
 		this.inertia = inertia;
+		this.firePropertyChange("simulationSettings", null, null);
 	}
 	
 	public void setNodes(int n) { nNodes = n; }
@@ -116,7 +119,18 @@ public class SimulationManager extends AbstractModel {
 		System.out.println("Region : " + region.toString());
 		if(populationGrid == null) throw new Exception("Population Grid not set.");
 		
-		simulation = new PSOSimulation(nNodes, range, nParticles, nIterations, region, populationGrid);
+		
+		simulation = new PSOSimulation(
+				nNodes, 
+				range,
+				lbestWeight,
+				gbestWeight,
+				inertia,
+				nParticles, 
+				nIterations, 
+				region, 
+				populationGrid);
+		
 		this.firePropertyChange("simulation", null, simulation);
 		
 	}

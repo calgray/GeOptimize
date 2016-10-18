@@ -35,6 +35,10 @@ public class PSOSimulation {
 
 	protected int nNodes;
 	protected int range;
+	protected float lbestWeight;
+	protected float gbestWeight;
+	protected float inertia;
+	
 	protected boolean parallelMode = true;
 	
 	protected int nParticles;
@@ -47,7 +51,16 @@ public class PSOSimulation {
 	protected GridData data;
 	
 	
-	public PSOSimulation(int nNodes, int range, int nParticles, int nIterations, Rectangle region, BufferedImage dataimg) {
+	public PSOSimulation(
+			int nNodes, 
+			int range,
+			float lbestWeight,
+			float gbestWeight,
+			float inertia,
+			int nParticles, 
+			int nIterations, 
+			Rectangle region, 
+			BufferedImage dataimg) {
 		
 		System.out.println("New Simulation!");
 		System.out.println("nNodes : " + nNodes);
@@ -59,6 +72,9 @@ public class PSOSimulation {
 		
 		this.nNodes = nNodes;
 		this.range = range;
+		this.lbestWeight = lbestWeight;
+		this.gbestWeight = gbestWeight;
+		this.inertia = inertia;
 		
 		this.nParticles = nParticles;
 		this.nIterations = nIterations;
@@ -71,7 +87,13 @@ public class PSOSimulation {
 		//Create particles with random solutions
 		this.particles = new LinkedList<PSOParticle>();
 		for(int i = 0; i < nParticles; i++) {
-			particles.add(new PSOParticle(nNodes, range, region));
+			particles.add(new PSOParticle(
+					nNodes, 
+					range, 
+					lbestWeight, 
+					gbestWeight, 
+					inertia, 
+					region));
 		}
 		
 		//calculate initial fitness for particles

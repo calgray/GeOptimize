@@ -35,16 +35,19 @@ public class PSOParticle {
 	protected Rectangle region;
 	
 	//TODO: might want to move these to the GUI
-	static float localBestWeight = 0.3f;
-	static float globalBestWeight = 0.1f;
-	static float inertia = 1f;
+	float localBestWeight = 0.3f;
+	float globalBestWeight = 0.1f;
+	float inertia = 1f;
 	
 	public PSOSolution getCurrent() { return current; }
 	public PSOSolution getLocalBest() { return localBest; }
 	
-	public PSOParticle(int nNodes, int range, Rectangle region) {
+	public PSOParticle(int nNodes, int range, float lbest, float gbest, float inertia, Rectangle region) {
 		this.nNodes = nNodes;
 		this.range = range;
+		this.localBestWeight = lbest;
+		this.globalBestWeight = gbest;
+		this.inertia = inertia;
 		this.region = region;
 		
 		this.current = PSOSolution.CreateRandom(nNodes, range, region);
