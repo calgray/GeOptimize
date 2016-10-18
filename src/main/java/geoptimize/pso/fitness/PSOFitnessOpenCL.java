@@ -1,5 +1,5 @@
 
-package geoptimize.pso;
+package geoptimize.pso.fitness;
 
 import java.awt.Rectangle;
 import java.nio.ByteOrder;
@@ -15,6 +15,9 @@ import com.nativelibs4java.opencl.CLProgram;
 import com.nativelibs4java.opencl.CLQueue;
 import com.nativelibs4java.opencl.JavaCL;
 import com.nativelibs4java.util.IOUtils;
+
+import geoptimize.pso.PSOSolution;
+
 import com.nativelibs4java.opencl.util.OpenCLType;
 import com.nativelibs4java.opencl.util.ReductionUtils;
 import com.nativelibs4java.opencl.util.ReductionUtils.Reductor;

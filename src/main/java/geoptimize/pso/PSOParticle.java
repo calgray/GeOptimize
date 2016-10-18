@@ -12,6 +12,7 @@ import javax.vecmath.Vector2f;
 import geoptimize.GridData;
 import geoptimize.ServiceNode;
 import geoptimize.helper.MathHelper;
+import geoptimize.pso.fitness.PSOFitnessFunction;
 
 /***
  * 
@@ -34,8 +35,9 @@ public class PSOParticle {
 	protected Rectangle region;
 	
 	//TODO: might want to move these to the GUI
-	static float localBestWeight = 0.5f;
-	static float globalBestWeight = 0.5f;
+	static float localBestWeight = 0.3f;
+	static float globalBestWeight = 0.1f;
+	static float inertia = 1f;
 	
 	public PSOSolution getCurrent() { return current; }
 	public PSOSolution getLocalBest() { return localBest; }
@@ -49,7 +51,7 @@ public class PSOParticle {
 		this.inertias = new float[nNodes];
 		this.velocities = new Vector2f[nNodes];
 		for(int i = 0; i < nNodes; i++) {
-			inertias[i] = 0.5f;
+			inertias[i] = inertia;
 			velocities[i] = new Vector2f(0, 0);
 		}
 		
@@ -73,14 +75,6 @@ public class PSOParticle {
 		p.localBest = (PSOSolution)this.localBest.clone();
 		
 		return p;
-	}
-	
-	public void updateFitness(GridData data) {
-		current.updateFitness(data, region);
-		
-		if(current.fitness > localBest.fitness) {
-			localBest = (PSOSolution)current.clone();
-		}
 	}
 	
 	/***
@@ -118,6 +112,21 @@ public class PSOParticle {
 			
 		}
 	}
+	
+	/***
+	 * Call this after stepping the simulation.
+	 * May want to run in parallel as this is the slowest part of
+	 * the simulation.
+	 * @param function
+	 */
+	public void updateFitness(PSOFitnessFunction function) {
+		current.fitness = function.calcFitness(current);
+		
+		if(current.fitness > localBest.fitness) {
+			localBest = (PSOSolution)current.clone();
+		}
+	}
+	
 	
 	/***
 	 * Random step test, simple moves particles randomly.

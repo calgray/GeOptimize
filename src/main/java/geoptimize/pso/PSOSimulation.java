@@ -3,12 +3,15 @@ package geoptimize.pso;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBuffer;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
 import geoptimize.GridData;
 import geoptimize.ServiceNode;
 import geoptimize.helper.MathHelper;
+import geoptimize.pso.fitness.PSOFitnessBinaryRange;
+import geoptimize.pso.fitness.PSOFitnessFunction;
 
 /***
  * Put actual simulation logic in here,
@@ -25,6 +28,9 @@ public class PSOSimulation {
 	protected PSOSolution globalBest;
 	public PSOSolution getGlobalBest() { return globalBest; }
 	
+	protected PSOFitnessFunction fitnessFunction;
+	
+	//TODO: atm, always using random
 	protected Distribution particleDistribution;
 
 	protected int nNodes;
@@ -57,10 +63,11 @@ public class PSOSimulation {
 		this.nIterations = nIterations;
 		
 		this.region = region;
-		
 		this.data = new GridData(dataimg);
+		this.fitnessFunction = new PSOFitnessBinaryRange(data, region);
 		
-		//Create random particles
+		
+		//Create particles with random solutions
 		this.particles = new LinkedList<PSOParticle>();
 		for(int i = 0; i < nParticles; i++) {
 			particles.add(new PSOParticle(nNodes, range, region));
@@ -68,33 +75,61 @@ public class PSOSimulation {
 		
 		//calculate initial fitness for particles
 		for(PSOParticle p : particles) {
-			p.updateFitness(data);
+			p.updateFitness(fitnessFunction);
 		}
 		
 		//update initial global best
-		float globalBestFitness = particles.getFirst().localBest.fitness;
-		int globalBestIndex = 0;
-		for(int i = 0; i < particles.size(); i++) {
-			if(particles.get(i).localBest.fitness > globalBestFitness) {
-				globalBestIndex = i;
-				globalBestFitness = particles.get(i).localBest.fitness;
-			}
-		}
-		globalBest = (PSOSolution)particles.get(globalBestIndex).localBest.clone();
+		globalBest = (PSOSolution)findGlobalBest().clone();
 	}
 	
 	/***
-	 * Simulation step, move all particles, update their fitness,
-	 * calculate newer localbests and global bests
+	 * Simulation step 
+	 *  1. move all particles
+	 *  2. update their fitness
+	 *  3. calculate newer localbests and global bests
 	 */
 	public void step() {
-		//move all particles
-		for(PSOParticle p : particles) {
-			p.step(globalBest);
-			p.updateFitness(data);
+		
+		//move all particles (Synchronous)
+		//for(PSOParticle p : particles) {
+		//	p.step(globalBest);
+		//	p.updateFitness(fitnessFunction);
+		//}
+		
+		//move all particles (Asynchronous)
+		ArrayList<Thread> threads = new ArrayList<Thread>(); 
+		for(int i = 0; i < particles.size(); i++) {
+			Thread t = new ParticleUpdateThread(particles.get(i));
+			t.start();
+		}
+		for(Thread t : threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		//update global best
+		globalBest = (PSOSolution)findGlobalBest().clone();
+		
+		currentIteration++;
+	}
+	
+	private class ParticleUpdateThread extends Thread {	
+		PSOParticle p;
+		
+		public ParticleUpdateThread(PSOParticle p) {
+			this.p = p; 
+		}
+		@Override
+		public void run() {
+			p.step(globalBest);
+			p.updateFitness(fitnessFunction);
+		}
+	}
+	
+	private PSOSolution findGlobalBest() {
 		float globalBestFitness = particles.getFirst().localBest.fitness;
 		int globalBestIndex = 0;
 		for(int i = 0; i < particles.size(); i++) {
@@ -103,8 +138,7 @@ public class PSOSimulation {
 				globalBestFitness = particles.get(i).localBest.fitness;
 			}
 		}
-		globalBest = (PSOSolution)particles.get(globalBestIndex).localBest.clone();
+		return particles.get(globalBestIndex).localBest;
 		
-		currentIteration++;
 	}
 }
