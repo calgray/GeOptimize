@@ -129,7 +129,7 @@ public class PSOParticle {
 	
 	
 	/***
-	 * Random step test, simple moves particles randomly.
+	 * Random step test, simply moves particles randomly.
 	 */
 	private void randomStep() {
 		Random r = new Random();

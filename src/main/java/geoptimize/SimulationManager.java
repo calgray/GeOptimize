@@ -38,6 +38,10 @@ public class SimulationManager extends AbstractModel {
 	protected int range = 50;
 	protected int nParticles = 10;
 	protected int nIterations = 100;
+	protected float lbestWeight = 0.5f;
+	protected float gbestWeight = 0.5f;
+	protected float inertia = 0.5f;
+	
 	
 	/* Properties */
 	public Rectangle getRegion() { return region; }
@@ -47,10 +51,24 @@ public class SimulationManager extends AbstractModel {
 		this.firePropertyChange("simulationRegion", null, region);
 	}
 	
+	//TODO: do something with these values
+	public void setLBestWeight(float weight) {
+		this.lbestWeight = weight;
+	}
+	
+	public void setGBestWeight(float weight) {
+		this.gbestWeight = weight;
+	}
+	
+	public void setInertia(float inertia) {
+		this.inertia = inertia;
+	}
+	
 	public void setNodes(int n) { nNodes = n; }
 	public void setRange(int n) { range = n; }
 	public void setIterations(int n) { nIterations = n; }
 	public void setParticles(int n) { nParticles = n; }
+	
 	
 	public BufferedImage getPopulationGrid() { return populationGrid; }
 	public PSOSimulation getSimulation() { return simulation; }
@@ -106,13 +124,12 @@ public class SimulationManager extends AbstractModel {
 	public void runSimulation() {
 		// TODO: call stepSimulation multiple times, allowing for screen updates
 		while(simulation.getCurrentIteration() < simulation.getMaxIterations()) {
-				simulation.step();
-				this.firePropertyChange("simulation", null, simulation);
-				try {
-					//Thread.sleep(10);
-				} catch(Exception e) {
-					
-				}
+			simulation.step();
+				
+			this.firePropertyChange("simulation", null, simulation);
+			try {
+				Thread.sleep(30);
+			} catch(Exception e) {}
 		}
 	}
 

@@ -117,6 +117,10 @@ public class MainWindow extends JFrame {
 		repaint();
 	}
 	
+	public void drawSimulationImmediate() {
+		simulationCanvas.paintImmediately(simulationCanvas.getVisibleRect());
+	}
+	
 	//This handles events triggered by the model
 	private class MainWindowPCL implements PropertyChangeListener {
 		protected MainWindow window;

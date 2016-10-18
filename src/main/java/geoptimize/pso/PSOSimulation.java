@@ -35,6 +35,7 @@ public class PSOSimulation {
 
 	protected int nNodes;
 	protected int range;
+	protected boolean parallelMode = true;
 	
 	protected int nParticles;
 	protected int nIterations;
@@ -91,23 +92,10 @@ public class PSOSimulation {
 	public void step() {
 		
 		//move all particles (Synchronous)
-		//for(PSOParticle p : particles) {
-		//	p.step(globalBest);
-		//	p.updateFitness(fitnessFunction);
-		//}
-		
-		//move all particles (Asynchronous)
-		ArrayList<Thread> threads = new ArrayList<Thread>(); 
-		for(int i = 0; i < particles.size(); i++) {
-			Thread t = new ParticleUpdateThread(particles.get(i));
-			t.start();
-		}
-		for(Thread t : threads) {
-			try {
-				t.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+		if(parallelMode) {
+			moveParallel();
+		} else {
+			moveSequential();
 		}
 		
 		//update global best
@@ -128,6 +116,29 @@ public class PSOSimulation {
 			p.updateFitness(fitnessFunction);
 		}
 	}
+	
+	private void moveSequential() {
+		for(PSOParticle p : particles) {
+			p.step(globalBest);
+			p.updateFitness(fitnessFunction);
+		}
+	}
+	
+	private void moveParallel() {
+		ArrayList<Thread> threads = new ArrayList<Thread>(); 
+		for(int i = 0; i < particles.size(); i++) {
+			Thread t = new ParticleUpdateThread(particles.get(i));
+			t.start();
+		}
+		for(Thread t : threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	
 	private PSOSolution findGlobalBest() {
 		float globalBestFitness = particles.getFirst().localBest.fitness;
