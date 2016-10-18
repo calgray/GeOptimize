@@ -76,9 +76,9 @@ public class SimulationToolbox extends JPanel {
 	private JLabel lblLocalbestWeight;
 	private JLabel lblGlobalbestWeight;
 	private JLabel lblInertia;
-	private JSpinner spnlbest;
-	private JSpinner spngbest;
-	private JSpinner spnInertia;
+	protected JSpinner spnlbest;
+	protected JSpinner spngbest;
+	protected JSpinner spnInertia;
 	
 	public SimulationToolbox(MainWindow mainWindow) {
 		this.parent = mainWindow;

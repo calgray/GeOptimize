@@ -29,6 +29,9 @@ public class Program {
 			public void run() {
 				MainWindow window = manager.createWindow();
 				manager.setRegion(new Rectangle(2000, 2000, 1000, 1000));
+				manager.setLBestWeight(0.3f);
+				manager.setGBestWeight(0.1f);
+				manager.setInertia(0.9f);
 				
 				//save some manual testing time by loading these at startup
 				try {

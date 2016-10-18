@@ -26,6 +26,8 @@ public class SimulationManager extends AbstractModel {
 	protected MainWindow mainWindow;
 	protected PSOSimulation simulation;
 	
+	protected Thread simulationThread;
+	
 	protected File populationGridFile;
 	protected BufferedImage populationGrid;
 	
@@ -54,17 +56,17 @@ public class SimulationManager extends AbstractModel {
 	//TODO: do something with these values
 	public void setLBestWeight(float weight) {
 		this.lbestWeight = weight;
-		this.firePropertyChange("simulationSettings", null, null);
+		this.firePropertyChange("lbestWeight", null, weight);
 	}
 	
 	public void setGBestWeight(float weight) {
 		this.gbestWeight = weight;
-		this.firePropertyChange("simulationSettings", null, null);
+		this.firePropertyChange("gbestWeight", null, weight);
 	}
 	
 	public void setInertia(float inertia) {
 		this.inertia = inertia;
-		this.firePropertyChange("simulationSettings", null, null);
+		this.firePropertyChange("inertia", null, inertia);
 	}
 	
 	public void setNodes(int n) { nNodes = n; }
@@ -127,7 +129,6 @@ public class SimulationManager extends AbstractModel {
 				gbestWeight,
 				inertia,
 				nParticles, 
-				nIterations, 
 				region, 
 				populationGrid);
 		
@@ -135,16 +136,29 @@ public class SimulationManager extends AbstractModel {
 		
 	}
 
-	public void runSimulation() {
+	/**
+	 * Run the simulation if it is not already running.
+	 */
+	public void runSimulation() throws Exception {
 		// TODO: call stepSimulation multiple times, allowing for screen updates
-		while(simulation.getCurrentIteration() < simulation.getMaxIterations()) {
-			simulation.step();
-				
-			this.firePropertyChange("simulation", null, simulation);
-			try {
-				Thread.sleep(30);
-			} catch(Exception e) {}
+		
+		
+		if(simulationThread == null || !simulationThread.isAlive()) {
+			simulationThread = new Thread(() -> {
+				while(simulation.getCurrentIteration() < nIterations) {	
+					simulation.step();		
+					SimulationManager.this.firePropertyChange("simulation", null, simulation);
+					try {
+						Thread.sleep(50);
+					} catch(Exception e) {}
+				}
+			});
+			simulationThread.start();
+		} else {
+			throw new Exception("Wait for existing simulation to finish");
 		}
+		
+
 	}
 
 	public void stepSimulation() throws Exception {

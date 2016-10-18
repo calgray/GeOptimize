@@ -42,8 +42,6 @@ public class PSOSimulation {
 	protected boolean parallelMode = true;
 	
 	protected int nParticles;
-	protected int nIterations;
-	public int getMaxIterations() { return nIterations; }
 	protected int currentIteration = 0;
 	public int getCurrentIteration() { return currentIteration; }
 	
@@ -57,8 +55,7 @@ public class PSOSimulation {
 			float lbestWeight,
 			float gbestWeight,
 			float inertia,
-			int nParticles, 
-			int nIterations, 
+			int nParticles,  
 			Rectangle region, 
 			BufferedImage dataimg) {
 		
@@ -66,7 +63,6 @@ public class PSOSimulation {
 		System.out.println("nNodes : " + nNodes);
 		System.out.println("range : " + range);
 		System.out.println("Particles : " + nParticles);
-		System.out.println("Iterations : " + nIterations);
 		System.out.println("Region : " + region);
 		System.out.println("Data : " + dataimg);
 		
@@ -77,7 +73,6 @@ public class PSOSimulation {
 		this.inertia = inertia;
 		
 		this.nParticles = nParticles;
-		this.nIterations = nIterations;
 		
 		this.region = region;
 		this.data = new GridData(dataimg);

@@ -147,6 +147,21 @@ public class MainWindow extends JFrame {
 					window.simulationCanvas.setBackgroundImage(img);
 					break;
 				}
+				case "lbestWeight": {
+					Float value = (Float)evt.getNewValue();
+					window.toolbox.spnlbest.setValue(value);
+					break;
+				}
+				case "gbestWeight": {
+					Float value = (Float)evt.getNewValue();
+					window.toolbox.spngbest.setValue(value);
+					break;
+				}
+				case "inertia": {
+					Float value = (Float)evt.getNewValue();
+					window.toolbox.spnInertia.setValue(value);
+					break;
+				}
 				case "simulationRegion": {
 					Rectangle rgn = (Rectangle)evt.getNewValue();
 					window.toolbox.spnRegionX.setValue(rgn.x);
