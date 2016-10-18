@@ -22,7 +22,8 @@ import com.nativelibs4java.opencl.util.ReductionUtils.Reductor;
 
 /**
  * Perform fitness on a single node.
- * Alternatively, could accept a collection of PSOParticles
+ * Alternatively, could accept a collection of PSOParticles.
+ * Check http://sungsoo.github.io/2015/04/21/setup-javacl.html
  * @author Callan
  *
  */
