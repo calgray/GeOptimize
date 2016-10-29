@@ -14,6 +14,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import geoptimize.SimulationManager;
 import geoptimize.ServiceNode;
 
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.MouseInputListener;
+
 
 /**
  * TODO: move toolbox content to SimulationToolbox.
@@ -105,6 +115,12 @@ public class MainWindow extends JFrame {
 		gbc_lblCursorcoords.insets = new Insets(0, 5, 0, 5);
 		gbc_lblCursorcoords.gridx = 0;
 		gbc_lblCursorcoords.gridy = 0;
+
+		//Event listener 
+        DragPicListener listener=new DragPicListener();  
+        simulationCanvas.addMouseListener(listener);  
+        simulationCanvas.addMouseMotionListener(listener); 
+           
 		statusBar.add(lblStatusBar, gbc_lblCursorcoords);
 		
 		
@@ -180,5 +196,32 @@ public class MainWindow extends JFrame {
 		}
 		
 	}
+
+	class DragPicListener implements MouseInputListener
+   { 
+      Point point=new Point(0,0); //Position
+      
+      public void mousePressed(MouseEvent e)
+      {
+         point=SwingUtilities.convertPoint(simulationCanvas,e.getPoint(),simulationCanvas.getParent()); //Get current position
+       }
+      
+      public void mouseDragged(MouseEvent e)
+      {
+         Point newPoint=SwingUtilities.convertPoint(simulationCanvas,e.getPoint(),simulationCanvas.getParent()); 
+         simulationCanvas.setLocation(simulationCanvas.getX()+(newPoint.x-point.x),simulationCanvas.getY()+(newPoint.y-point.y)); //Set new position for image
+         point=newPoint; //Update position
+       }
+      
+      public void mouseReleased(MouseEvent e){}
+      
+      public void mouseEntered(MouseEvent e){}
+      
+      public void mouseExited(MouseEvent e){}
+      
+      public void mouseClicked(MouseEvent e){}
+      
+      public void mouseMoved(MouseEvent e){}
+   }
 	
 }
