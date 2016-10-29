@@ -97,9 +97,9 @@ public class MainWindow extends JFrame {
 		simulationScrollPane = new JScrollPane(simulationCanvas);
 		tabbedPane.addTab("Simulation", simulationScrollPane);
 
-		heatmapCanvas = new ImageCanvas();
-		heatmapScrollPane = new JScrollPane(heatmapCanvas);
-		tabbedPane.addTab("HeatMap", heatmapScrollPane);
+		//heatmapCanvas = new ImageCanvas();
+		//heatmapScrollPane = new JScrollPane(heatmapCanvas);
+		//tabbedPane.addTab("HeatMap", heatmapScrollPane);
 		
 		statusBar = new JPanel();
 		mainPanel.add(statusBar, BorderLayout.SOUTH);

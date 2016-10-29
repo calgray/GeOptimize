@@ -88,22 +88,24 @@ public class PSOParticle {
 	public void step(PSOSolution globalBest) {
 		///step using globalBest, localBest, inertias, velocities
 		
-		int rr = 2;
-		int rrmoh = 0;
 		
 		Random r = new Random();
+		int aMax = 30;
 		
 		for(int i = 0; i < nNodes; i++) {
 			
 			velocities[i].x = 
 					inertias[i] * velocities[i].x +
-					localBestWeight  * (r.nextInt(rr) - rrmoh) * (localBest.nodes.get(i).getPosition().x  - current.nodes.get(i).getPosition().x) +
-					globalBestWeight * (r.nextInt(rr) - rrmoh) * (globalBest.nodes.get(i).getPosition().x - current.nodes.get(i).getPosition().x);
+					localBestWeight  * r.nextInt(2) * MathHelper.clamp(-aMax, aMax, localBest.nodes.get(i).getPosition().x  - current.nodes.get(i).getPosition().x) +
+					globalBestWeight * r.nextInt(2) * MathHelper.clamp(-aMax, aMax, globalBest.nodes.get(i).getPosition().x - current.nodes.get(i).getPosition().x);
 			
 			velocities[i].y =
 					inertias[i] * velocities[i].y +
-					localBestWeight  * (r.nextInt(rr) - rrmoh) * (localBest.nodes.get(i).getPosition().y  - current.nodes.get(i).getPosition().y) +
-					globalBestWeight * (r.nextInt(rr) - rrmoh) * (globalBest.nodes.get(i).getPosition().y - current.nodes.get(i).getPosition().y);
+					localBestWeight  * r.nextInt(2) * MathHelper.clamp(-aMax, aMax, localBest.nodes.get(i).getPosition().y  - current.nodes.get(i).getPosition().y) +
+					globalBestWeight * r.nextInt(2) * MathHelper.clamp(-aMax, aMax, globalBest.nodes.get(i).getPosition().y - current.nodes.get(i).getPosition().y);
+			
+			velocities[i].x = MathHelper.clamp(-(float)region.width, (float)region.width, velocities[i].x);
+			velocities[i].y = MathHelper.clamp(-(float)region.height, (float)region.height, velocities[i].y);
 			
 			int x = (int)(current.nodes.get(i).getPosition().x + velocities[i].x);
 			int y = (int)(current.nodes.get(i).getPosition().y + velocities[i].y);
