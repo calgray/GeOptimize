@@ -90,7 +90,7 @@ public class PSOParticle {
 		
 		
 		Random r = new Random();
-		int aMax = 30;
+		int aMax = 150;
 		
 		for(int i = 0; i < nNodes; i++) {
 			
