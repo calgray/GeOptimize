@@ -69,7 +69,7 @@ public class SimulationToolbox extends JPanel {
 	private JLabel lblRegionwH;
 	private JButton btnStep;
 	private JButton btnRun;
-	private JCheckBox chckbxParallelMode;
+	private JCheckBox chckbxParticleNumbering;
 	private JCheckBox chckbxAlternativeColorMode;
 	private JSpinner spnSleepTime;
 	private JLabel lblSleepTime;
@@ -407,13 +407,16 @@ public class SimulationToolbox extends JPanel {
 		add(chckbxShowGBest, gbc_chckbxShowGBest);
 		
 		
-		chckbxParallelMode = new JCheckBox("Parallel Mode");
+		chckbxParticleNumbering = new JCheckBox("Particle Numbering");
+		chckbxParticleNumbering.addItemListener((e) -> {
+			parent.simulationCanvas.setParticleNumbering(e.getStateChange() == ItemEvent.SELECTED);
+		});
 		GridBagConstraints gbc_chckbxParallelMode = new GridBagConstraints();
 		gbc_chckbxParallelMode.anchor = GridBagConstraints.WEST;
 		gbc_chckbxParallelMode.insets = new Insets(0, 0, 5, 5);
 		gbc_chckbxParallelMode.gridx = 2;
 		gbc_chckbxParallelMode.gridy = 16;
-		add(chckbxParallelMode, gbc_chckbxParallelMode);
+		add(chckbxParticleNumbering, gbc_chckbxParallelMode);
 
 		
 		chckbxAlternativeColorMode = new JCheckBox("Alternative Color Mode");

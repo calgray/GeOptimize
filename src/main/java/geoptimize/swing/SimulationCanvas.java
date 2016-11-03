@@ -46,6 +46,7 @@ public class SimulationCanvas extends JComponent {
 	private boolean showSwarm = true;
 	private boolean showGBest = true;
 	private boolean alternativeColors = false;
+	private boolean particleNumbering = false;
 	
 	private Image image;
 	private float magnification = 1;
@@ -68,6 +69,8 @@ public class SimulationCanvas extends JComponent {
 		new Color(0.9f, 0.9f, 0.1f, 0.6f),
 		new Color(0.8f, 0.4f, 0.0f, 0.6f)
 	};
+
+	
 	
 	public void setMagnification(float mag) {
 		if(magnification != mag && image != null) {
@@ -126,6 +129,10 @@ public class SimulationCanvas extends JComponent {
 
 	public void setShowGBest(boolean b) {
 		showGBest = b;
+	}
+	
+	public void setParticleNumbering(boolean b) {
+		particleNumbering = b;
 	}
 	
 	public void setAlternativeColorMode(boolean b) {
@@ -208,10 +215,11 @@ public class SimulationCanvas extends JComponent {
 								(int)(r * 2 * magnification));
 						
 						graphics.setColor(textColor);
-						graphics.drawString("Particle:" + particleIndex, 
+						if(particleNumbering) {
+							graphics.drawString("Particle:" + particleIndex, 
 								(int)(p.x * magnification),
 								(int)(p.y * magnification));
-						
+						}
 						
 					}
 					particleIndex++;
@@ -276,6 +284,7 @@ public class SimulationCanvas extends JComponent {
 			updateCursor();
 		}
 	}
+
 
 
 }
