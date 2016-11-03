@@ -399,6 +399,13 @@ public class SimulationToolbox extends JPanel {
 		chckbxShowGBest.addItemListener((e) -> {
 			parent.simulationCanvas.setShowGBest(e.getStateChange() == ItemEvent.SELECTED);
 		});
+		GridBagConstraints gbc_chckbxShowGBest = new GridBagConstraints();
+		gbc_chckbxShowGBest.anchor = GridBagConstraints.WEST;
+		gbc_chckbxShowGBest.insets = new Insets(0, 0, 5, 5);
+		gbc_chckbxShowGBest.gridx = 1;
+		gbc_chckbxShowGBest.gridy = 17;
+		add(chckbxShowGBest, gbc_chckbxShowGBest);
+		
 		
 		chckbxParallelMode = new JCheckBox("Parallel Mode");
 		GridBagConstraints gbc_chckbxParallelMode = new GridBagConstraints();
@@ -407,17 +414,13 @@ public class SimulationToolbox extends JPanel {
 		gbc_chckbxParallelMode.gridx = 2;
 		gbc_chckbxParallelMode.gridy = 16;
 		add(chckbxParallelMode, gbc_chckbxParallelMode);
-		
-		GridBagConstraints gbc_chckbxShowGBest = new GridBagConstraints();
-		gbc_chckbxShowGBest.anchor = GridBagConstraints.WEST;
-		gbc_chckbxShowGBest.insets = new Insets(0, 0, 5, 5);
-		gbc_chckbxShowGBest.gridx = 1;
-		gbc_chckbxShowGBest.gridy = 17;
-		add(chckbxShowGBest, gbc_chckbxShowGBest);
-		
 
 		
 		chckbxAlternativeColorMode = new JCheckBox("Alternative Color Mode");
+		chckbxAlternativeColorMode.addItemListener((e) -> {
+			parent.simulationCanvas.setAlternativeColorMode(e.getStateChange() == ItemEvent.SELECTED);
+		});
+		
 		GridBagConstraints gbc_chckbxAlternativeColorMode = new GridBagConstraints();
 		gbc_chckbxAlternativeColorMode.anchor = GridBagConstraints.WEST;
 		gbc_chckbxAlternativeColorMode.insets = new Insets(0, 0, 5, 5);

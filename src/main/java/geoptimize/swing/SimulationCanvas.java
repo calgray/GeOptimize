@@ -45,6 +45,7 @@ public class SimulationCanvas extends JComponent {
 	
 	private boolean showSwarm = true;
 	private boolean showGBest = true;
+	private boolean alternativeColors = false;
 	
 	private Image image;
 	private float magnification = 1;
@@ -55,6 +56,18 @@ public class SimulationCanvas extends JComponent {
 	
 	private Point cursorMapLocation = new Point();
 	private Point cursorLocation = new Point();
+	
+	private Color textColor = Color.RED;
+	private Color swarmColor = new Color(0f, 1f, 0.5f, 0.6f);
+	private Color gbestColor = new Color(0f, 0.2f, 1.0f, 0.6f);
+	
+	private Color[] colors = new Color[] {
+		new Color(0f, 1f, 0.5f, 0.6f),
+		new Color(0f, 1f, 0.8f, 0.6f),
+		new Color(0.9f, 0.1f, 0.8f, 0.6f),
+		new Color(0.9f, 0.9f, 0.1f, 0.6f),
+		new Color(0.8f, 0.4f, 0.0f, 0.6f)
+	};
 	
 	public void setMagnification(float mag) {
 		if(magnification != mag && image != null) {
@@ -115,6 +128,10 @@ public class SimulationCanvas extends JComponent {
 		showGBest = b;
 	}
 	
+	public void setAlternativeColorMode(boolean b) {
+		alternativeColors = b;
+	}
+	
 	public void setBackgroundImage(Image image) {
 		this.image = image;
 		setMagnification(1);
@@ -166,14 +183,8 @@ public class SimulationCanvas extends JComponent {
 		//might not need this
 		simulation = parent.context.getSimulation();
 		
-		if(simulation == null) {
-			//show dummyNodes
-		}
-		else {
-			
-			//show all particles
+		if(simulation != null) {
 			Color textColor = Color.RED;
-			Color nodeColor = new Color(0f, 1f, 0.5f, 0.6f);
 			
 			if(showSwarm) {
 				int particleIndex = 0;
@@ -181,12 +192,15 @@ public class SimulationCanvas extends JComponent {
 					
 					List<ServiceNode> nodes = particle.getCurrent().getNodes();
 					
-					for(ServiceNode node : nodes) {
-						Point p = node.getPosition();
-						float r = node.getRange();
+					for(int i = 0; i < nodes.size(); i++) {
+						Point p = nodes.get(i).getPosition();
+						float r = nodes.get(i).getRange();
 						
-						
-						graphics.setColor(nodeColor);
+						if(alternativeColors) {
+							graphics.setColor(colors[i%colors.length]);
+						} else {
+							graphics.setColor(swarmColor);
+						}
 						graphics.fillOval(
 								(int)((p.x - r) * magnification),
 								(int)((p.y - r) * magnification),
@@ -206,7 +220,6 @@ public class SimulationCanvas extends JComponent {
 			
 			//show globalbest
 			if(showGBest) {
-				nodeColor = new Color(0f, 0.2f, 1.0f, 0.6f);
 				
 				
 				List<ServiceNode> nodes = simulation.getGlobalBest().getNodes();
@@ -214,7 +227,7 @@ public class SimulationCanvas extends JComponent {
 					Point p = node.getPosition();
 					float r = node.getRange();
 					
-					graphics.setColor(nodeColor);
+					graphics.setColor(gbestColor);
 					graphics.fillOval(
 							(int)((p.x - r) * magnification),
 							(int)((p.y - r) * magnification),
@@ -263,4 +276,6 @@ public class SimulationCanvas extends JComponent {
 			updateCursor();
 		}
 	}
+
+
 }

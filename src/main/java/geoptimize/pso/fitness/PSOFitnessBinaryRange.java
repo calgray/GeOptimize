@@ -27,6 +27,10 @@ public class PSOFitnessBinaryRange extends PSOFitnessFunction {
 		
 		for(int y = (int)region.getMinY(); y < region.getMaxY(); y++) {
 			for(int x = (int)region.getMinX(); x < region.getMaxX(); x++) {
+				
+				//fast return, most cells have population of 0
+				if(grid.get(x, y) == 0) continue;
+					
 				for(ServiceNode n : solution.getNodes()) {
 					int xdist = x - n.getPosition().x;
 					int ydist = y - n.getPosition().y;
