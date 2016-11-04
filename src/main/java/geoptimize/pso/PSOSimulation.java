@@ -59,13 +59,6 @@ public class PSOSimulation {
 			Rectangle region, 
 			BufferedImage dataimg) {
 		
-		System.out.println("New Simulation!");
-		System.out.println("nNodes : " + nNodes);
-		System.out.println("range : " + range);
-		System.out.println("Particles : " + nParticles);
-		System.out.println("Region : " + region);
-		System.out.println("Data : " + dataimg);
-		
 		this.nNodes = nNodes;
 		this.range = range;
 		this.lbestWeight = lbestWeight;
